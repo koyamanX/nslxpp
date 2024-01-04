@@ -1,0 +1,262 @@
+%skeleton "lalr1.cc"
+%require "3.2"
+%defines
+%define api.value.type variant
+%define api.token.constructor
+
+%code requires {
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include "nslxpp.hh"
+#ifndef FLEX_SCANNER
+#include <FlexLexer.h>
+#endif
+}
+
+%code {
+}
+
+%token DECLARE MODULE STRUCT
+%token INPUT OUTPUT INOUT
+%token ASSIGN
+%token<int> NUMBER
+%token IDENTIFIER
+
+%%
+top:
+	init nsls
+	;
+init:
+	{}
+nsls:
+	nsls nsl
+	|
+	;
+nsl:
+	module_declaration
+	| module_definition
+	;
+module_declaration:
+	DECLARE module_name '{' io_declarations '}' {
+		// insert map created by io_declarations
+	}
+	;
+module_definition:
+	MODULE module_name '{' common_tasks '}' {
+	}
+	;
+module_name:
+	IDENTIFIER
+	;
+common_tasks:
+	common_tasks common_task {
+		
+	}
+	|
+	;
+common_task:
+	lvalue '=' expression ';' {
+
+	}
+	;
+lvalue:
+	output_name {
+
+	}
+	;
+io_declarations:
+	io_declarations io_declaration {
+		// create empty map, returns at the end.
+	}
+	|
+	;
+io_declaration:
+	input_declaration {
+		
+	}
+	| output_declaration {
+		
+	}
+	;
+input_declaration:
+	INPUT input_name ';' {
+		
+	}
+	| INPUT input_name '[' NUMBER ']' ';' {
+		
+	}
+	;
+input_name:
+	IDENTIFIER {
+		
+	}
+	;
+output_declaration:
+	OUTPUT output_name ';' {
+		
+	}
+	| OUTPUT output_name '[' NUMBER ']' ';' {
+		
+	}
+	;
+output_name:
+	IDENTIFIER {
+		
+	}
+	;
+expression:
+	conditional_expression {
+		
+	}
+	;
+conditional_expression:
+	logical_or_expression {
+		
+	}
+	;
+logical_or_expression:
+	logical_and_expression {
+		
+	}
+	| logical_or_expression '|' '|' logical_and_expression {
+		
+	}
+	;
+logical_and_expression:
+	relational_expression {
+		
+	}
+	| logical_and_expression '&' '&' relational_expression {
+		
+	}
+	;
+relational_expression:
+	equalitiy_expression {
+		
+	}
+	| relational_expression '>' equalitiy_expression {
+		
+	}
+	| relational_expression '<' equalitiy_expression {
+		
+	}
+	| relational_expression '>' '=' equalitiy_expression {
+		
+	}
+	| relational_expression '<' '=' equalitiy_expression {
+		
+	}
+	;
+
+equalitiy_expression:
+	shift_expression {
+		
+	}
+	| equalitiy_expression '=' '=' shift_expression {
+		
+	}
+	| equalitiy_expression '!' '=' shift_expression {
+		
+	}
+	;
+
+shift_expression:
+	additive_expression {
+		
+	}
+	| shift_expression '<' '<' additive_expression {
+		
+	}
+	| shift_expression '>' '>' additive_expression {
+		
+	}
+	;
+additive_expression:
+	multiplicative_expression {
+		
+	}
+	| additive_expression '+' multiplicative_expression {
+		
+	}
+	| additive_expression '-' multiplicative_expression {
+		
+	}
+	;
+multiplicative_expression:
+	bitwise_or_expression {
+		
+	}
+	| multiplicative_expression '*' bitwise_or_expression {
+		
+	}
+	;
+bitwise_or_expression:
+	bitwise_xor_expression {
+		
+	}
+	| bitwise_or_expression '|' bitwise_xor_expression {
+		
+	}
+	;
+bitwise_xor_expression:
+	bitwise_and_expression {
+		
+	}
+	| bitwise_xor_expression '^' bitwise_and_expression {
+		
+	}
+	;
+bitwise_and_expression:
+	unary_expression {
+		
+	}
+	| bitwise_and_expression '&' unary_expression {
+		
+	}
+	;
+unary_expression:
+	'^' unary_expression {
+		
+	}
+	| '|' unary_expression {
+		
+	}
+	| '&' unary_expression {
+		
+	}
+	| '~' unary_expression {
+		
+	}
+	| '!' unary_expression {
+		
+	}
+	| element {
+		
+	}
+element:
+	IDENTIFIER {
+
+	}
+%%
+
+int yylex(void) {
+	static FlexLexer *lexer = new yyFlexLexer;
+
+	return lexer->yylex();
+}
+
+void
+yy::parser::error(const std::string& msg)
+{
+  std::cerr << msg << '\n';
+}
+
+int main(void) {
+	yy::parser parser;
+    parser.parse();
+	return 0;
+}
