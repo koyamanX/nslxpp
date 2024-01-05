@@ -1,37 +1,45 @@
 %{
+
 #include "nslxpp.hh"
 #include "nslxpp.tab.hh"
+#include "nslxpp_scanner.hh"
+
+#undef YY_DECL
+#define YY_DECL int NSLXPP::NSLXPP_Scanner::yylex(NSLXPP::NSLXPP_Parser::semantic_type * const yylval, \
+                      NSLXPP::NSLXPP_Parser::location_type *location)
 %}
 
 %option c++
 %option noyywrap
+%option yyclass="NSLXPP::NSLXPP_Scanner"
+%option nodefault
 
 %%
 declare {
-	return yy::parser::token::DECLARE;
+	return NSLXPP::NSLXPP_Parser::token::DECLARE;
 }
 module {
-	return yy::parser::token::MODULE;
+	return NSLXPP::NSLXPP_Parser::token::MODULE;
 }
 struct {
-	return yy::parser::token::STRUCT;
+	return NSLXPP::NSLXPP_Parser::token::STRUCT;
 }
 input {
-	return yy::parser::token::INPUT;
+	return NSLXPP::NSLXPP_Parser::token::INPUT;
 }
 output {
-	return yy::parser::token::OUTPUT;
+	return NSLXPP::NSLXPP_Parser::token::OUTPUT;
 }
 inout {
-	return yy::parser::token::INOUT;
+	return NSLXPP::NSLXPP_Parser::token::INOUT;
 }
 [A-Za-z][_A-Za-z0-9]* {
 	//yylval.ident = strdup(yytext);
-	return yy::parser::token::IDENTIFIER;
+	return NSLXPP::NSLXPP_Parser::token::IDENTIFIER;
 }
 [1-9][0-9]* {
 	//yylval.size = atoll(yytext);
-	return yy::parser::token::NUMBER;
+	return NSLXPP::NSLXPP_Parser::token::NUMBER;
 }
 [\n\t ]+ {
 	;

@@ -1,8 +1,11 @@
 %skeleton "lalr1.cc"
-%require "3.2"
+%require "3.0"
 %defines
 %define api.value.type variant
-%define api.token.constructor
+//%define api.token.constructor
+%define api.namespace {NSLXPP}
+%define api.parser.class {NSLXPP_Parser}
+%locations
 
 %code requires {
 #include <string>
@@ -11,13 +14,19 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "nslxpp.hh"
-#ifndef FLEX_SCANNER
-#include <FlexLexer.h>
-#endif
+namespace NSLXPP {
+	class NSLXPP_Parser;
+	class NSLXPP_Scanner;
+}
 }
 
+%parse-param { NSLXPP_Scanner& scanner }
+
 %code {
+#include "nslxpp_scanner.hh"
+
+#undef yylex
+#define yylex scanner.yylex
 }
 
 %token DECLARE MODULE STRUCT
@@ -243,20 +252,10 @@ element:
 	}
 %%
 
-int yylex(void) {
-	static FlexLexer *lexer = new yyFlexLexer;
-
-	return lexer->yylex();
-}
 
 void
-yy::parser::error(const std::string& msg)
+NSLXPP::NSLXPP_Parser::error(const location_type& loc, const std::string& msg)
 {
   std::cerr << msg << '\n';
 }
 
-int main(void) {
-	yy::parser parser;
-    parser.parse();
-	return 0;
-}

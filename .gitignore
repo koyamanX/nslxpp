@@ -2,4 +2,7 @@ lex.yy.cc
 nslxpp
 nslxpp.tab.cc
 nslxpp.tab.hh
-
+location.hh
+position.hh
+stack.hh
+.vscode

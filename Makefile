@@ -6,7 +6,7 @@ BISON=bison
 BISONOPT=
 
 TOP=nslxpp
-SRC=nslxpp.tab.cc lex.yy.cc
+SRC=nslxpp.tab.cc lex.yy.cc main.cc
 
 all: $(TOP)
 nslxpp.tab.cc: $(TOP).yy
