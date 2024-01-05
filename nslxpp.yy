@@ -67,9 +67,6 @@ using json = nlohmann::json;
 %type <json> unary_expression
 %type <json> element
 
-
-
-
 %%
 top:
 	init nsls
@@ -81,18 +78,19 @@ nsls:
 	|
 	;
 nsl:
-	module_declaration
-	| module_definition
-	{
+	module_declaration {
+		std::cout << $1.dump(4) << std::endl;
+	}
+	| module_definition {
 		std::cout << $1.dump(4) << std::endl;
 	}
 	;
 module_declaration:
 	DECLARE module_name '{' io_declarations '}' {
 		json ast = {
-			{"type", "module_declaration"},
-			{"module_name", $2},
-			{"io_declarations", $4}
+			{"type", ND_DECLARE},
+			{"name", $2},
+			{"io", $4}
 		};
 		$$ = move(ast);
 	}
@@ -100,8 +98,8 @@ module_declaration:
 module_definition:
 	MODULE module_name '{' common_tasks '}' {
 		json ast = {
-			{"type", "module_definition"},
-			{"module_name", $2},
+			{"type", ND_MODULE},
+			{"name", $2},
 			{"common_tasks", $4}
 		};
 		$$ = move(ast);
@@ -120,7 +118,7 @@ common_tasks:
 common_task:
 	lvalue '=' expression ';' {
 		json ast = {
-			{"type", "common_task"},
+			{"type", ND_ASSIGN},
 			{"lvalue", $1},
 			{"expression", $3}
 		};
@@ -128,10 +126,11 @@ common_task:
 	}
 	;
 lvalue:
+	// TODO: search for identifier in symtab
 	output_name {
 		json ast = {
-			{"type", "lvalue"},
-			{"output_name", $1}
+			{"type", ND_OUTPUT},
+			{"name", $1}
 		};
 		$$ = move(ast);
 	}
@@ -154,16 +153,16 @@ io_declaration:
 input_declaration:
 	INPUT input_name ';' {
 		json ast = {
-			{"type", "input_declaration"},
-			{"input_name", $2},
+			{"type", ND_INPUT},
+			{"name", $2},
 			{"size", 1}
 		};
 		$$ = move(ast);
 	}
 	| INPUT input_name '[' NUMBER ']' ';' {
 		json ast = {
-			{"type", "input_declaration"},
-			{"input_name", $2},
+			{"type", ND_INPUT},
+			{"name", $2},
 			{"size", $4}
 		};
 		$$ = move(ast);
@@ -177,16 +176,16 @@ input_name:
 output_declaration:
 	OUTPUT output_name ';' {
 		json ast = {
-			{"type", "output_declaration"},
-			{"output_name", $2},
+			{"type", ND_OUTPUT},
+			{"name", $2},
 			{"size", 1}
 		};
 		$$ = move(ast);
 	}
 	| OUTPUT output_name '[' NUMBER ']' ';' {
 		json ast = {
-			{"type", "output_declaration"},
-			{"output_name", $2},
+			{"type", ND_OUTPUT},
+			{"name", $2},
 			{"size", $4}
 		};
 	}
@@ -199,8 +198,8 @@ output_name:
 expression:
 	conditional_expression {
 		json ast = {
-			{"type", "expression"},
-			{"conditional_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
@@ -208,8 +207,8 @@ expression:
 conditional_expression:
 	logical_or_expression {
 		json ast = {
-			{"type", "conditional_expression"},
-			{"logical_or_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
@@ -217,16 +216,17 @@ conditional_expression:
 logical_or_expression:
 	logical_and_expression {
 		json ast = {
-			{"type", "logical_or_expression"},
-			{"logical_and_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| logical_or_expression '|' '|' logical_and_expression {
 		json ast = {
-			{"type", "logical_or_expression"},
-			{"logical_or_expression", $1},
-			{"logical_and_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_LOGICAL_OR},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);
 	}
@@ -234,16 +234,17 @@ logical_or_expression:
 logical_and_expression:
 	relational_expression {
 		json ast = {
-			{"type", "logical_and_expression"},
-			{"relational_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| logical_and_expression '&' '&' relational_expression {
 		json ast = {
-			{"type", "logical_and_expression"},
-			{"logical_and_expression", $1},
-			{"relational_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_LOGICAL_AND},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);
 	}
@@ -251,40 +252,44 @@ logical_and_expression:
 relational_expression:
 	equalitiy_expression {
 		json ast = {
-			{"type", "relational_expression"},
-			{"equalitiy_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| relational_expression '>' equalitiy_expression {
 		json ast = {
-			{"type", "relational_expression"},
-			{"relational_expression", $1},
-			{"equalitiy_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_GREATER},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
 	| relational_expression '<' equalitiy_expression {
 		json ast = {
-			{"type", "relational_expression"},
-			{"relational_expression", $1},
-			{"equalitiy_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_LESS},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
 	| relational_expression '>' '=' equalitiy_expression {
 		json ast = {
-			{"type", "relational_expression"},
-			{"relational_expression", $1},
-			{"equalitiy_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_GREATER_EQUAL},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);
 	}
 	| relational_expression '<' '=' equalitiy_expression {
 		json ast = {
-			{"type", "relational_expression"},
-			{"relational_expression", $1},
-			{"equalitiy_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_LESS_EQUAL},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);		
 	}
@@ -293,24 +298,26 @@ relational_expression:
 equalitiy_expression:
 	shift_expression {
 		json ast = {
-			{"type", "equalitiy_expression"},
-			{"shift_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| equalitiy_expression '=' '=' shift_expression {
 		json ast = {
-			{"type", "equalitiy_expression"},
-			{"equalitiy_expression", $1},
-			{"shift_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_EQUAL},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);
 	}
 	| equalitiy_expression '!' '=' shift_expression {
 		json ast = {
-			{"type", "equalitiy_expression"},
-			{"equalitiy_expression", $1},
-			{"shift_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_NOT_EQUAL},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);
 	}
@@ -319,24 +326,26 @@ equalitiy_expression:
 shift_expression:
 	additive_expression {
 		json ast = {
-			{"type", "shift_expression"},
-			{"additive_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| shift_expression '<' '<' additive_expression {
 		json ast = {
-			{"type", "shift_expression"},
-			{"shift_expression", $1},
-			{"additive_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_SHIFT_LEFT},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);
 	}
 	| shift_expression '>' '>' additive_expression {
 		json ast = {
-			{"type", "shift_expression"},
-			{"shift_expression", $1},
-			{"additive_expression", $4}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_SHIFT_RIGHT},
+			{"left", $1},
+			{"right", $4}
 		};
 		$$ = move(ast);
 	}
@@ -344,24 +353,26 @@ shift_expression:
 additive_expression:
 	multiplicative_expression {
 		json ast = {
-			{"type", "additive_expression"},
-			{"multiplicative_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| additive_expression '+' multiplicative_expression {
 		json ast = {
-			{"type", "additive_expression"},
-			{"additive_expression", $1},
-			{"multiplicative_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_ADD},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
 	| additive_expression '-' multiplicative_expression {
 		json ast = {
-			{"type", "additive_expression"},
-			{"additive_expression", $1},
-			{"multiplicative_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_SUB},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
@@ -369,16 +380,17 @@ additive_expression:
 multiplicative_expression:
 	bitwise_or_expression {
 		json ast = {
-			{"type", "multiplicative_expression"},
-			{"bitwise_or_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| multiplicative_expression '*' bitwise_or_expression {
 		json ast = {
-			{"type", "multiplicative_expression"},
-			{"multiplicative_expression", $1},
-			{"bitwise_or_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_MUL},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
@@ -386,16 +398,17 @@ multiplicative_expression:
 bitwise_or_expression:
 	bitwise_xor_expression {
 		json ast = {
-			{"type", "bitwise_or_expression"},
-			{"bitwise_xor_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| bitwise_or_expression '|' bitwise_xor_expression {
 		json ast = {
-			{"type", "bitwise_or_expression"},
-			{"bitwise_or_expression", $1},
-			{"bitwise_xor_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_BITWISE_OR},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
@@ -403,16 +416,17 @@ bitwise_or_expression:
 bitwise_xor_expression:
 	bitwise_and_expression {
 		json ast = {
-			{"type", "bitwise_xor_expression"},
-			{"bitwise_and_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| bitwise_xor_expression '^' bitwise_and_expression {
 		json ast = {
-			{"type", "bitwise_xor_expression"},
-			{"bitwise_xor_expression", $1},
-			{"bitwise_and_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_BITWISE_XOR},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
@@ -420,16 +434,17 @@ bitwise_xor_expression:
 bitwise_and_expression:
 	unary_expression {
 		json ast = {
-			{"type", "bitwise_and_expression"},
-			{"unary_expression", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 		$$ = move(ast);
 	}
 	| bitwise_and_expression '&' unary_expression {
 		json ast = {
-			{"type", "bitwise_and_expression"},
-			{"bitwise_and_expression", $1},
-			{"unary_expression", $3}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_BITWISE_AND},
+			{"left", $1},
+			{"right", $3}
 		};
 		$$ = move(ast);
 	}
@@ -437,50 +452,55 @@ bitwise_and_expression:
 unary_expression:
 	'^' unary_expression {
 		json ast = {
-			{"type", "unary_expression"},
-			{"unary_expression", $2}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_REDUCTION_XOR},
+			{"expr", $2}
 		};
 		$$ = move(ast);
 	}
 	| '|' unary_expression {
 		json ast = {
-			{"type", "unary_expression"},
-			{"unary_expression", $2}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_REDUCTION_OR},
+			{"expr", $2}
 		};
 		$$ = move(ast);		
 	}
 	| '&' unary_expression {
 		json ast = {
-			{"type", "unary_expression"},
-			{"unary_expression", $2}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_REDUCTION_AND},
+			{"expr", $2}
 		};
 		$$ = move(ast);
 	}
 	| '~' unary_expression {
 		json ast = {
-			{"type", "unary_expression"},
-			{"unary_expression", $2}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_REDUCTION_NOT},
+			{"expr", $2}
 		};
 		$$ = move(ast);
 	}
 	| '!' unary_expression {
 		json ast = {
-			{"type", "unary_expression"},
-			{"unary_expression", $2}
+			{"type", ND_EXPRESSION},
+			{"kind", ND_LOGICAL_NOT},
+			{"expr", $2}
 		};
 		$$ = move(ast);
 	}
 	| element {
 		json ast = {
-			{"type", "unary_expression"},
-			{"element", $1}
+			{"type", ND_EXPRESSION},
+			{"expr", $1}
 		};
 	}
 element:
 	IDENTIFIER {
 		json ast = {
-			{"type", "element"},
-			{"identifier", $1}
+			{"type", ND_ELEMENT},
+			{"name", $1}
 		};
 		$$ = move(ast);
 	}
