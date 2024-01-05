@@ -79,10 +79,10 @@ nsls:
 	;
 nsl:
 	module_declaration {
-		std::cout << $1.dump(4) << std::endl;
+		nslxpp.add_declare($1["name"], $1);
 	}
 	| module_definition {
-		std::cout << $1.dump(4) << std::endl;
+		nslxpp.add_module($1["name"], $1);
 	}
 	;
 module_declaration:

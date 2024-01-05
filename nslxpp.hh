@@ -2,14 +2,26 @@
 #define NSLXPP_HH
 
 #include <iostream>
+#include <string>
+#include <map>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace NSLXPP {
 class NSLXPP_Driver {
 public:
     NSLXPP_Driver() = default;
     virtual ~NSLXPP_Driver();
+    void add_module(const std::string &name, json &module);
+    void add_declare(const std::string &name, json &module);
+    json find_declare(const std::string &name);
+    json find_module(const std::string &name);
 
     void parse(std::istream &in);
+private:
+    std::map<std::string, json> modules;
+    std::map<std::string, json> declares;
 };
 
 enum {
