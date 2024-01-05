@@ -4,10 +4,10 @@
 #include <iostream>
 
 namespace NSLXPP {
-class NSLXPP {
+class NSLXPP_Driver {
 public:
-    NSLXPP() = default;
-    virtual ~NSLXPP();
+    NSLXPP_Driver() = default;
+    virtual ~NSLXPP_Driver();
 
     void parse(std::istream &in);
 };

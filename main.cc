@@ -2,7 +2,7 @@
 #include "nslxpp.hh"
 
 int main(void) {
-    NSLXPP::NSLXPP nslxpp;
+    NSLXPP::NSLXPP_Driver nslxpp;
     nslxpp.parse(std::cin);
     return 0;
 }

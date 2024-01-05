@@ -22,7 +22,7 @@ namespace NSLXPP {
 }
 
 %parse-param { NSLXPP_Scanner& scanner }
-%parse-param { NSLXPP &nslxpp }
+%parse-param { NSLXPP_Driver &nslxpp }
 
 %code {
 #include "nslxpp_scanner.hh"

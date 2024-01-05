@@ -2,12 +2,12 @@
 #include "nslxpp.hh"
 #include "nslxpp_scanner.hh" // Include the header file for NSLXPP_Scanner
 
-NSLXPP::NSLXPP::~NSLXPP()
+NSLXPP::NSLXPP_Driver::~NSLXPP_Driver()
 {
 
 }
 
-void NSLXPP::NSLXPP::parse(std::istream &in)
+void NSLXPP::NSLXPP_Driver::parse(std::istream &in)
 {
     NSLXPP_Scanner *scanner = nullptr;
     scanner = new NSLXPP_Scanner(&in);
