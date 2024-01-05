@@ -31,6 +31,12 @@ output {
 inout {
 	return NSLXPP_Parser::token::INOUT;
 }
+func_in {
+	return NSLXPP_Parser::token::FUNC_IN;
+}
+func_out {
+	return NSLXPP_Parser::token::FUNC_OUT;
+}
 [A-Za-z][_A-Za-z0-9]* {
 	//yylval.ident = strdup(yytext);
 	yylval->build<std::string>(yytext);

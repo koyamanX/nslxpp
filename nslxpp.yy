@@ -38,6 +38,7 @@ using json = nlohmann::json;
 %token ASSIGN
 %token<int> NUMBER
 %token<std::string> IDENTIFIER
+%token FUNC_IN FUNC_OUT
 
 %type <json> module_declaration
 %type <std::string> module_name
@@ -48,6 +49,8 @@ using json = nlohmann::json;
 %type <std::string> input_name
 %type <std::string> output_name
 %type <std::string> declare_name
+%type <json> func_in_declaration
+%type <json> func_out_declaration
 
 %type <json> module_definition
 %type <std::vector<json>> common_tasks
@@ -157,6 +160,12 @@ io_declaration:
 	| output_declaration {
 		$$ = move($1);
 	}
+	| func_in_declaration {
+		$$ = move($1);
+	}
+	| func_out_declaration {
+		$$ = move($1);
+	}
 	;
 input_declaration:
 	INPUT input_name ';' {
@@ -172,6 +181,24 @@ input_declaration:
 			{"type", ND_INPUT},
 			{"name", $2},
 			{"size", $4}
+		};
+		$$ = move(ast);
+	}
+	;
+func_in_declaration:
+	FUNC_IN input_name ';' {
+		json ast = {
+			{"type", ND_FUNC_IN},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| FUNC_IN input_name '(' ')' ';' {
+		json ast = {
+			{"type", ND_FUNC_IN},
+			{"name", $2},
+			{"size", 1}
 		};
 		$$ = move(ast);
 	}
@@ -196,6 +223,25 @@ output_declaration:
 			{"name", $2},
 			{"size", $4}
 		};
+		$$ = move(ast);
+	}
+	;
+func_out_declaration:
+	FUNC_OUT output_name ';' {
+		json ast = {
+			{"type", ND_FUNC_OUT},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| FUNC_OUT output_name '(' ')' ';' {
+		json ast = {
+			{"type", ND_FUNC_OUT},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
 	}
 	;
 output_name:
