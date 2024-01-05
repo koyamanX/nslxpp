@@ -1,10 +1,8 @@
 #include "nslxpp.tab.hh"
-#include "nslxpp_scanner.hh" 
+#include "nslxpp.hh"
 
 int main(void) {
-    NSLXPP::NSLXPP_Scanner *scanner = nullptr;
-    scanner = new NSLXPP::NSLXPP_Scanner();
-    NSLXPP::NSLXPP_Parser parser(*scanner);
-    parser.parse();
+    NSLXPP::NSLXPP nslxpp;
+    nslxpp.parse(std::cin);
     return 0;
 }

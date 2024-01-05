@@ -20,11 +20,11 @@ public:
     };
     using FlexLexer::yylex;
 
-    virtual int yylex(NSLXPP::NSLXPP_Parser::value_type * const lval,
-                      NSLXPP::NSLXPP_Parser::location_type *location);
+    virtual int yylex(NSLXPP_Parser::value_type * const lval,
+                      NSLXPP_Parser::location_type *location);
 
 private:
-    NSLXPP::NSLXPP_Parser::value_type *yylval = nullptr;
+    NSLXPP_Parser::value_type *yylval = nullptr;
 };
 }
 

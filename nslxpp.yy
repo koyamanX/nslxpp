@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "nslxpp.hh"
 namespace NSLXPP {
 	class NSLXPP_Parser;
 	class NSLXPP_Scanner;
@@ -21,6 +22,7 @@ namespace NSLXPP {
 }
 
 %parse-param { NSLXPP_Scanner& scanner }
+%parse-param { NSLXPP &nslxpp }
 
 %code {
 #include "nslxpp_scanner.hh"
