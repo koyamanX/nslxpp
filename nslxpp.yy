@@ -41,7 +41,7 @@ using json = nlohmann::json;
 
 %type <json> module_declaration
 %type <std::string> module_name
-%type <json> io_declarations
+%type <std::map<std::string, json>> io_declarations
 %type <json> io_declaration
 %type <json> input_declaration
 %type <json> output_declaration
@@ -137,7 +137,11 @@ lvalue:
 	;
 io_declarations:
 	io_declarations io_declaration {
-		$1.push_back($2);
+		if ($1.find($2["name"]) != $1.end()) {
+			std::cerr << "error: duplicate declaration of " << $2["name"] << std::endl;
+			exit(1);
+		}
+		$1.emplace($2["name"], $2);
 		$$ = move($1);
 	}
 	| {} /* empty */
