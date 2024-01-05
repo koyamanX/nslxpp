@@ -37,7 +37,7 @@ inout {
 	return NSLXPP_Parser::token::IDENTIFIER;
 }
 [1-9][0-9]* {
-	//yylval.size = atoll(yytext);
+	yylval->build<int>(atoi(yytext));
 	return NSLXPP_Parser::token::NUMBER;
 }
 [\n\t ]+ {
