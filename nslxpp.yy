@@ -47,6 +47,7 @@ using json = nlohmann::json;
 %type <json> output_declaration
 %type <std::string> input_name
 %type <std::string> output_name
+%type <std::string> declare_name
 
 %type <json> module_definition
 %type <std::vector<json>> common_tasks
@@ -86,7 +87,7 @@ nsl:
 	}
 	;
 module_declaration:
-	DECLARE module_name '{' io_declarations '}' {
+	DECLARE declare_name '{' io_declarations '}' {
 		json ast = {
 			{"type", ND_DECLARE},
 			{"name", $2},
@@ -105,8 +106,11 @@ module_definition:
 		$$ = move(ast);
 	}
 	;
-module_name:
+declare_name:
 	IDENTIFIER
+	;
+module_name:
+	IDENTIFIER { nslxpp.set_current_module($1); $$ = $1; }
 	;
 common_tasks:
 	common_tasks common_task {

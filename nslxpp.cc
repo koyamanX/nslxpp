@@ -61,3 +61,20 @@ json NSLXPP::NSLXPP_Driver::find_declare(const std::string &name)
         return nullptr;
     }
 }
+
+void NSLXPP::NSLXPP_Driver::set_current_module(const std::string &name)
+{
+    current_module_name = name;
+    current_module = find_declare(name);
+    
+    if(current_module == nullptr)
+    {
+        std::cerr << "Error: Module " << name << " not found" << std::endl;
+        exit(1);
+    }
+}
+
+json NSLXPP::NSLXPP_Driver::get_current_module()
+{
+    return current_module;
+}
