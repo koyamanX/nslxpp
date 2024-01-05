@@ -1,5 +1,4 @@
 #include "nslxpp.tab.hh"
-#include "nslxpp.hh"
 #include "nslxpp_scanner.hh" 
 
 int main(void) {

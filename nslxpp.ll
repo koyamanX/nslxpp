@@ -1,6 +1,4 @@
 %{
-
-#include "nslxpp.hh"
 #include "nslxpp.tab.hh"
 #include "nslxpp_scanner.hh"
 
