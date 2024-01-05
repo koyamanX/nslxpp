@@ -16,4 +16,4 @@ lex.yy.cc: $(TOP).ll
 $(TOP): $(SRC) 
 	$(CXX) $(CXXFLAGS) $(SRC)  -o $@ -lfl
 clean:
-	rm -f $(OBJ) $(TOP) lex.yy.cc nslxpp.tab.cc nslxpp.tab.hh
+	rm -f $(OBJ) $(TOP) lex.yy.cc nslxpp.tab.cc nslxpp.tab.hh location.hh position.hh stack.hh
