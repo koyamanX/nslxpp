@@ -35,6 +35,7 @@ inout {
 }
 [A-Za-z][_A-Za-z0-9]* {
 	//yylval.ident = strdup(yytext);
+	yylval->build<std::string>(yytext);
 	return NSLXPP::NSLXPP_Parser::token::IDENTIFIER;
 }
 [1-9][0-9]* {

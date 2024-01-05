@@ -33,7 +33,7 @@ namespace NSLXPP {
 %token INPUT OUTPUT INOUT
 %token ASSIGN
 %token<int> NUMBER
-%token IDENTIFIER
+%token<std::string> IDENTIFIER
 
 %%
 top:
