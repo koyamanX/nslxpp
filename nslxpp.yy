@@ -199,6 +199,17 @@ func_in_declaration:
 	| FUNC_IN input_name '(' func_in_params ')' ';' {
 		json ast = {
 			{"type", ND_FUNC_IN},
+			{"params", $4},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| FUNC_IN input_name '(' func_in_params ')' ':' output_name ';' {
+		json ast = {
+			{"type", ND_FUNC_IN},
+			{"params", $4},
+			{"return", $7},
 			{"name", $2},
 			{"size", 1}
 		};
@@ -250,6 +261,17 @@ func_out_declaration:
 	| FUNC_OUT output_name '(' func_out_params ')' ';' {
 		json ast = {
 			{"type", ND_FUNC_OUT},
+			{"params", $4},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| FUNC_OUT output_name '(' func_out_params ')' ':' input_name ';' {
+		json ast = {
+			{"type", ND_FUNC_OUT},
+			{"params", $4},
+			{"return", $7},
 			{"name", $2},
 			{"size", 1}
 		};
