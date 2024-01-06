@@ -39,6 +39,7 @@ using json = nlohmann::json;
 %token<int> NUMBER
 %token<std::string> IDENTIFIER
 %token FUNC_IN FUNC_OUT
+%token WIRE REG
 
 %type <json> module_declaration
 %type <std::string> module_name
@@ -72,6 +73,10 @@ using json = nlohmann::json;
 %type <json> bitwise_and_expression
 %type <json> unary_expression
 %type <json> element
+%type <std::map<std::string, json>> module_signal_declarations
+%type <json> module_signal_declaration
+%type <json> wire_declaration
+%type <json> reg_declaration
 
 %%
 top:
@@ -102,11 +107,12 @@ module_declaration:
 	}
 	;
 module_definition:
-	MODULE module_name '{' common_tasks '}' {
+	MODULE module_name '{' common_tasks module_signal_declarations '}' {
 		json ast = {
 			{"type", ND_MODULE},
 			{"name", $2},
-			{"common_tasks", $4}
+			{"common_tasks", $4},
+			{"signals", $5}
 		};
 		$$ = move(ast);
 	}
@@ -130,6 +136,61 @@ common_task:
 			{"type", ND_ASSIGN},
 			{"left", $1},
 			{"right", $3}
+		};
+		$$ = move(ast);
+	}
+	;
+module_signal_declarations:
+	module_signal_declarations module_signal_declaration {
+		if ($1.find($2["name"]) != $1.end()) {
+			std::cerr << "error: duplicate declaration of " << $2["name"] << std::endl;
+			exit(1);
+		}
+		$1.emplace($2["name"], $2);
+		$$ = move($1);
+	}
+	| {} /* empty */
+	;
+module_signal_declaration:
+	wire_declaration {
+		$$ = move($1);
+	}
+	| reg_declaration {
+		$$ = move($1);
+	}
+	;
+wire_declaration:
+	WIRE IDENTIFIER ';' {
+		json ast = {
+			{"type", ND_WIRE},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| WIRE IDENTIFIER '[' NUMBER ']' ';' {
+		json ast = {
+			{"type", ND_WIRE},
+			{"name", $2},
+			{"size", $4}
+		};
+		$$ = move(ast);
+	}
+	;
+reg_declaration:
+	REG IDENTIFIER ';' {
+		json ast = {
+			{"type", ND_REG},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| REG IDENTIFIER '[' NUMBER ']' ';' {
+		json ast = {
+			{"type", ND_REG},
+			{"name", $2},
+			{"size", $4}
 		};
 		$$ = move(ast);
 	}

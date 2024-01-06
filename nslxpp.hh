@@ -67,6 +67,8 @@ enum {
 	ND_REDUCTION_NOT,
     ND_FUNC_IN,
     ND_FUNC_OUT,
+    ND_WIRE,
+    ND_REG,
 
 };
 }
