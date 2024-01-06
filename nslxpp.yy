@@ -51,6 +51,8 @@ using json = nlohmann::json;
 %type <std::string> declare_name
 %type <json> func_in_declaration
 %type <json> func_out_declaration
+%type <std::vector<json>> func_in_params
+%type <std::vector<json>> func_out_params
 
 %type <json> module_definition
 %type <std::vector<json>> common_tasks
@@ -194,7 +196,7 @@ func_in_declaration:
 		};
 		$$ = move(ast);
 	}
-	| FUNC_IN input_name '(' ')' ';' {
+	| FUNC_IN input_name '(' func_in_params ')' ';' {
 		json ast = {
 			{"type", ND_FUNC_IN},
 			{"name", $2},
@@ -202,6 +204,16 @@ func_in_declaration:
 		};
 		$$ = move(ast);
 	}
+	;
+func_in_params:
+	func_in_params ',' input_name {
+		$1.push_back($3);
+		$$ = move($1);
+	}
+	| input_name {
+		$$ = std::vector<json>{ $1 };
+	}
+	| {} /* empty */
 	;
 input_name:
 	IDENTIFIER {
@@ -235,7 +247,7 @@ func_out_declaration:
 		};
 		$$ = move(ast);
 	}
-	| FUNC_OUT output_name '(' ')' ';' {
+	| FUNC_OUT output_name '(' func_out_params ')' ';' {
 		json ast = {
 			{"type", ND_FUNC_OUT},
 			{"name", $2},
@@ -243,6 +255,16 @@ func_out_declaration:
 		};
 		$$ = move(ast);
 	}
+	;
+func_out_params:
+	func_out_params ',' output_name {
+		$1.push_back($3);
+		$$ = move($1);
+	}
+	| output_name {
+		$$ = std::vector<json>{ $1 };
+	}
+	| {} /* empty */
 	;
 output_name:
 	IDENTIFIER {
