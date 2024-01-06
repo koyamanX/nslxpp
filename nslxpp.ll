@@ -43,6 +43,18 @@ reg {
 wire {
 	return NSLXPP_Parser::token::WIRE;
 }
+func_self {
+	return NSLXPP_Parser::token::FUNC_SELF;
+}
+mem {
+	return NSLXPP_Parser::token::MEM;
+}
+state_name {
+	return NSLXPP_Parser::token::STATE_NAME;
+}
+proc_name {
+	return NSLXPP_Parser::token::PROC_NAME;
+}
 [A-Za-z][_A-Za-z0-9]* {
 	//yylval.ident = strdup(yytext);
 	yylval->build<std::string>(yytext);

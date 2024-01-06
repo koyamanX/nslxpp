@@ -6,6 +6,7 @@
 %define api.namespace {NSLXPP}
 %define api.parser.class {NSLXPP_Parser}
 %locations
+%define parse.error	verbose
 
 %code requires {
 #include <string>
@@ -38,8 +39,10 @@ using json = nlohmann::json;
 %token ASSIGN
 %token<int> NUMBER
 %token<std::string> IDENTIFIER
-%token FUNC_IN FUNC_OUT
-%token WIRE REG
+%token FUNC_IN FUNC_OUT FUNC_SELF
+%token WIRE REG MEM
+%token PROC_NAME
+%token STATE_NAME
 
 %type <json> module_declaration
 %type <std::string> module_name
@@ -77,6 +80,14 @@ using json = nlohmann::json;
 %type <json> module_signal_declaration
 %type <json> wire_declaration
 %type <json> reg_declaration
+%type <json> func_self_declaration
+%type <std::vector<json>> func_self_params
+%type <json> func_self_return
+%type <json> mem_declaration
+%type <json> state_name_declaration
+%type <std::vector<json>> state_name_declaration_list
+%type <json> proc_name_declaration
+%type <std::vector<json>> proc_name_params
 
 %%
 top:
@@ -107,12 +118,13 @@ module_declaration:
 	}
 	;
 module_definition:
-	MODULE module_name '{' common_tasks module_signal_declarations '}' {
+	MODULE module_name '{' common_tasks module_signal_declarations state_name_declaration '}' {
 		json ast = {
 			{"type", ND_MODULE},
 			{"name", $2},
 			{"common_tasks", $4},
-			{"signals", $5}
+			{"signals", $5},
+			{"states", $6}
 		};
 		$$ = move(ast);
 	}
@@ -158,6 +170,15 @@ module_signal_declaration:
 	| reg_declaration {
 		$$ = move($1);
 	}
+	| mem_declaration {
+		$$ = move($1);
+	}
+	| func_self_declaration {
+		$$ = move($1);
+	}
+	| proc_name_declaration {
+		$$ = move($1);
+	}
 	;
 wire_declaration:
 	WIRE IDENTIFIER ';' {
@@ -194,6 +215,113 @@ reg_declaration:
 		};
 		$$ = move(ast);
 	}
+	;
+mem_declaration:
+	MEM IDENTIFIER '[' NUMBER ']' ';' {
+		json ast = {
+			{"type", ND_MEM},
+			{"name", $2},
+			{"size", $4},
+			{"depth", 1}
+		};
+		$$ = move(ast);
+	}
+	| MEM IDENTIFIER '[' NUMBER ']' '[' NUMBER ']' ';' {
+		json ast = {
+			{"type", ND_MEM},
+			{"name", $2},
+			{"size", $4},
+			{"depth", $7}
+		};
+		$$ = move(ast);
+	}
+	;
+func_self_declaration:
+	FUNC_SELF IDENTIFIER ';' {
+		json ast = {
+			{"type", ND_FUNC_SELF},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| FUNC_SELF IDENTIFIER '(' func_self_params ')' ';' {
+		json ast = {
+			{"type", ND_FUNC_SELF},
+			{"params", $4},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	| FUNC_SELF IDENTIFIER '(' func_self_params ')' ':' func_self_return ';' {
+		json ast = {
+			{"type", ND_FUNC_SELF},
+			{"params", $4},
+			{"return", $7},
+			{"name", $2},
+			{"size", 1}
+		};
+		$$ = move(ast);
+	}
+	;
+func_self_params:
+	func_self_params ',' IDENTIFIER {
+		$1.push_back($3);
+		$$ = move($1);
+	}
+	| IDENTIFIER {
+		$$ = std::vector<json>{ $1 };
+	}
+	| {} /* empty */
+	;
+func_self_return:
+	IDENTIFIER {
+		$$ = $1;
+	}
+	;
+state_name_declaration:
+	STATE_NAME state_name_declaration_list ';' {
+		json ast = {
+			{"type", ND_STATE_NAME},
+			{"names", $2}
+		};
+		$$ = move(ast);
+	}
+	| {} /* empty */
+	;
+state_name_declaration_list:
+	state_name_declaration_list ',' IDENTIFIER {
+		$1.push_back($3);
+		$$ = move($1);
+	}
+	| IDENTIFIER {
+		json ast = {
+			{"type", ND_STATE},
+			{"name", $1}
+		};
+		$$ = std::vector<json>{ move(ast) };
+	}
+	;
+proc_name_declaration:
+	PROC_NAME IDENTIFIER '(' proc_name_params ')' ';' {
+		json ast = {
+			{"type", ND_PROC_NAME},
+			{"name", $2},
+			{"params", $4}
+		};
+		$$ = move(ast);
+	}
+	;
+proc_name_params:
+	proc_name_params ',' IDENTIFIER {
+		$1.push_back($3);
+		$$ = move($1);
+	}
+	| IDENTIFIER {
+		$$ = std::vector<json>{ $1 };
+	}
+	| {} /* empty */
 	;
 lvalue:
 	// TODO: search for identifier in symtab

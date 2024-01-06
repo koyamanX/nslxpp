@@ -69,6 +69,11 @@ enum {
     ND_FUNC_OUT,
     ND_WIRE,
     ND_REG,
+    ND_FUNC_SELF,
+    ND_MEM,
+    ND_STATE_NAME,
+    ND_STATE,
+    ND_PROC_NAME,
 
 };
 }
