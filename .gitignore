@@ -6,3 +6,5 @@ location.hh
 position.hh
 stack.hh
 .vscode
+*.o
+*.d
