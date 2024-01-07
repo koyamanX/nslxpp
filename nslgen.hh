@@ -5,9 +5,12 @@
 
 class NSLGen : public IGen {
 public:
-    NSLGen();
+    NSLGen(std::ostream &out);
     virtual ~NSLGen();
-    void gen(std::ostream &out, std::map<std::string, json> &modules);
+    void gen(std::map<std::string, json> &modules);
+
+private:
+    std::ostream &out;
 };
 
 #endif

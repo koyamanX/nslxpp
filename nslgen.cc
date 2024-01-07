@@ -1,6 +1,6 @@
 #include "nslgen.hh"
 
-NSLGen::NSLGen()
+NSLGen::NSLGen(std::ostream &out) : out(out)
 {
 
 }
@@ -10,7 +10,7 @@ NSLGen::~NSLGen()
 
 }
 
-void NSLGen::gen(std::ostream &out, std::map<std::string, json> &modules)
+void NSLGen::gen(std::map<std::string, json> &modules)
 {
     out << "NSLGen::gen" << std::endl;
     for(auto &module : modules)

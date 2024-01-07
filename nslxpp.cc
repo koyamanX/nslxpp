@@ -85,5 +85,5 @@ json NSLXPP::NSLXPP_Driver::take_declare(const std::string &name)
 
 void NSLXPP::NSLXPP_Driver::gen(std::ostream &out)
 {
-    codegenerator->gen(out, modules);
+    codegenerator->gen(modules);
 }
