@@ -40,21 +40,33 @@ void NSLGen::gen_declare(const std::string &name, const std::map<std::string, js
 }
 
 void NSLGen::gen_input(const json &signal) {
-    out << "input " << signal["name"].get<std::string>() << "[" << signal["size"].get<size_t>() << "];" << std::endl;
+    auto signal_name = signal["name"].get<std::string>();
+    auto signal_size = signal["size"].get<size_t>();
+
+    out << "input " << signal_name << "[" << signal_size << "];" << std::endl;
 }
 
 void NSLGen::gen_output(const json &signal) {
-    out << "output " << signal["name"].get<std::string>() << "[" << signal["size"].get<size_t>() << "];" << std::endl;
+    auto signal_name = signal["name"].get<std::string>();
+    auto signal_size = signal["size"].get<size_t>();
+
+    out << "output " << signal_name << "[" << signal_size << "];" << std::endl;
 }
 
 void NSLGen::gen_func_in(const json &signal) {
-    out << "func_in " << signal["name"].get<std::string>() << "(";
+    auto signal_name = signal["name"].get<std::string>();
+
+    out << "func_in " << signal_name << "(";
     if(signal.contains("params")) {
-        gen_func_in_params(signal["params"].get<std::vector<json>>());
+        auto params_node = signal["params"].get<std::vector<json>>();
+
+        gen_func_in_params(params_node);
     }
     out << ")";
     if(signal.contains("return")) {
-        gen_func_in_return(signal["return"].get<json>());
+        auto return_node = signal["return"].get<json>();
+
+        gen_func_in_return(return_node);
     }
     out << ";" << std::endl;
 }
@@ -64,7 +76,9 @@ void NSLGen::gen_func_in_params(const std::vector<json> &params) {
     {
         for(auto &param : params)
         {
-            out << param.get<std::string>();
+            auto param_name = param.get<std::string>();
+
+            out << param_name;
             if(param != params.back())
             {
                 out << ", ";
@@ -74,18 +88,26 @@ void NSLGen::gen_func_in_params(const std::vector<json> &params) {
 }
 
 void NSLGen::gen_func_in_return(const json &ret) {
+    auto return_name = ret.get<std::string>();
+
     out << " : ";
-    out << ret.get<std::string>();
+    out << return_name;
 }
 
 void NSLGen::gen_func_out(const json &signal) {
-    out << "func_out " << signal["name"].get<std::string>() << "(";
+    auto signal_name = signal["name"].get<std::string>();
+
+    out << "func_out " << signal_name << "(";
     if(signal.contains("params")) {
-        gen_func_out_params(signal["params"].get<std::vector<json>>());
+        auto params_node = signal["params"].get<std::vector<json>>();
+
+        gen_func_out_params(params_node);
     }
     out << ")";
     if(signal.contains("return")) {
-        gen_func_out_return(signal["return"].get<json>());
+        auto return_node = signal["return"].get<json>();
+
+        gen_func_out_return(return_node);
     }
     out << ";" << std::endl;
 }
@@ -95,7 +117,9 @@ void NSLGen::gen_func_out_params(const std::vector<json> &params) {
     {
         for(auto &param : params)
         {
-            out << param.get<std::string>();
+            auto param_name = param.get<std::string>();
+
+            out << param_name;
             if(param != params.back())
             {
                 out << ", ";
@@ -105,8 +129,10 @@ void NSLGen::gen_func_out_params(const std::vector<json> &params) {
 }
 
 void NSLGen::gen_func_out_return(const json &ret) {
+    auto return_name = ret.get<std::string>();
+
     out << " : ";
-    out << ret.get<std::string>();
+    out << return_name;
 }
 
 void NSLGen::gen(std::map<std::string, json> &modules)
@@ -115,6 +141,7 @@ void NSLGen::gen(std::map<std::string, json> &modules)
     {
         auto &name = module.first;
         auto symtab = module.second["signals"].get<std::map<std::string, json>>();
+        
         gen_declare(name, symtab);
     }
 }
