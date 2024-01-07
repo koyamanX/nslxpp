@@ -62,19 +62,38 @@ json NSLXPP::NSLXPP_Driver::find_declare(const std::string &name)
     }
 }
 
-void NSLXPP::NSLXPP_Driver::set_current_module(const std::string &name)
+void NSLXPP::NSLXPP_Driver::gen(std::ostream &out)
 {
-    current_module_name = name;
-    current_module = find_declare(name);
-    
-    if(current_module == nullptr)
+    for(auto &it : declares)
     {
-        std::cerr << "Error: Module " << name << " not found" << std::endl;
-        exit(1);
-    }
-}
+        auto &declare = it.second;
 
-json NSLXPP::NSLXPP_Driver::get_current_module()
-{
-    return current_module;
+        if(declare["type"] != ND_DECLARE)
+        {
+            continue;
+        }
+
+        out << "declare " << declare["name"].get<std::string>() << " {" << std::endl;
+
+        for(auto &io : declare["io"])
+        {
+            if(io["type"] == ND_INPUT)
+            {
+                out << "    input " << io["name"].get<std::string>() << "[" << io["size"] << "];" << std::endl;
+            }
+            else if(io["type"] == ND_OUTPUT)
+            {
+                out << "    output " << io["name"].get<std::string>() << "[" << io["size"] << "];" << std::endl;
+            } else if(io["type"] == ND_FUNC_IN)
+            {
+                out << "    func_in " << io["name"].get<std::string>() << "(";
+                
+                out << ");" << std::endl;
+            } else if(io["type"] == ND_FUNC_OUT)
+            {
+                out << "    func_out " << io["name"].get<std::string>() << "[" << io["size"] << "];" << std::endl;
+            }
+        }
+        out << "}" << std::endl;
+    }
 }
