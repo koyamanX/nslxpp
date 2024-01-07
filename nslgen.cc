@@ -11,10 +11,10 @@ NSLGen::~NSLGen()
 
 }
 
-void NSLGen::gen_declare(const std::string &name, json &signals) {
+void NSLGen::gen_declare(const std::string &name, json &symtab) {
     out << "declare " << name;
     gen_opening_brace();
-    for(auto &signal : signals)
+    for(auto &signal : symtab)
     {
         switch(signal["type"].get<NSLXPP::NodeType>())
         {
