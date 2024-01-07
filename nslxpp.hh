@@ -29,7 +29,7 @@ private:
 	IGen *codegenerator;
 };
 
-enum {
+typedef enum {
 	ND_DECLARE,
 	ND_MODULE,
 	ND_INPUT,
@@ -72,7 +72,7 @@ enum {
     ND_STATE,
     ND_PROC_NAME,
 
-};
+} NodeType;
 }
 
 #endif

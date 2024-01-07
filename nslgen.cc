@@ -16,21 +16,20 @@ void NSLGen::gen_declare(const std::string &name, json &signals) {
     gen_opening_brace();
     for(auto &signal : signals)
     {
-        if(signal["type"] == NSLXPP::ND_INPUT)
+        switch(signal["type"].get<NSLXPP::NodeType>())
         {
-            gen_input(signal);
-        }
-        else if(signal["type"] == NSLXPP::ND_OUTPUT)
-        {
-            gen_output(signal);
-        }
-        else if(signal["type"] == NSLXPP::ND_FUNC_IN)
-        {
-            gen_func_in(signal);
-        }
-        else if(signal["type"] == NSLXPP::ND_FUNC_OUT)
-        {
-            gen_func_out(signal);
+            case NSLXPP::ND_INPUT:
+                gen_input(signal);
+                break;
+            case NSLXPP::ND_OUTPUT:
+                gen_output(signal);
+                break;
+            case NSLXPP::ND_FUNC_IN:
+                gen_func_in(signal);
+                break;
+            case NSLXPP::ND_FUNC_OUT:
+                gen_func_out(signal);
+                break;
         }
     }
     gen_closing_brace();
