@@ -1,5 +1,5 @@
 %skeleton "lalr1.cc"
-%require "3.0"
+%require "3.2"
 %defines
 %define api.value.type variant
 //%define api.token.constructor
@@ -88,7 +88,7 @@ using json = nlohmann::json;
 %type <std::vector<json>> state_name_declaration_list
 %type <json> proc_name_declaration
 %type <std::vector<json>> proc_name_params
-
+%type <json> nsl
 %%
 top:
 	init nsls
@@ -102,9 +102,11 @@ nsls:
 nsl:
 	module_declaration {
 		nslxpp.add_declare($1["name"], $1);
+		$$ = move($1);
 	}
 	| module_definition {
 		nslxpp.add_module($1["name"], $1);
+		$$ = move($1);
 	}
 	;
 module_declaration:
@@ -133,7 +135,7 @@ declare_name:
 	IDENTIFIER
 	;
 module_name:
-	IDENTIFIER { nslxpp.set_current_module($1); $$ = $1; }
+	IDENTIFIER
 	;
 common_tasks:
 	common_tasks common_task {
