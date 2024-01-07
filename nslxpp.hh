@@ -5,15 +5,15 @@
 #include <string>
 #include <map>
 #include <nlohmann/json.hpp>
+#include <memory>
+#include "IGen.hh"
 
 using json = nlohmann::json;
 
 namespace NSLXPP {
 class NSLXPP_Driver {
 public:
-    NSLXPP_Driver()
-    {
-    };
+    NSLXPP_Driver(IGen *gen);
     virtual ~NSLXPP_Driver();
     void add_module(const std::string &name, json &module);
     void add_declare(const std::string &name, json &module);
@@ -25,6 +25,7 @@ public:
 private:
     std::map<std::string, json> modules;
     std::map<std::string, json> declares;
+	IGen *codegenerator;
 };
 
 enum {

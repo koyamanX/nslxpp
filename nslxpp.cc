@@ -1,6 +1,12 @@
 #include "nslxpp.tab.hh"
 #include "nslxpp.hh"
-#include "nslxpp_scanner.hh" // Include the header file for NSLXPP_Scanner
+#include "nslxpp_scanner.hh"
+#include <memory>
+
+NSLXPP::NSLXPP_Driver::NSLXPP_Driver(IGen *gen)
+{
+    codegenerator = gen;
+}
 
 NSLXPP::NSLXPP_Driver::~NSLXPP_Driver()
 {
@@ -64,36 +70,5 @@ json NSLXPP::NSLXPP_Driver::find_declare(const std::string &name)
 
 void NSLXPP::NSLXPP_Driver::gen(std::ostream &out)
 {
-    for(auto &it : declares)
-    {
-        auto &declare = it.second;
-
-        if(declare["type"] != ND_DECLARE)
-        {
-            continue;
-        }
-
-        out << "declare " << declare["name"].get<std::string>() << " {" << std::endl;
-
-        for(auto &io : declare["io"])
-        {
-            if(io["type"] == ND_INPUT)
-            {
-                out << "    input " << io["name"].get<std::string>() << "[" << io["size"] << "];" << std::endl;
-            }
-            else if(io["type"] == ND_OUTPUT)
-            {
-                out << "    output " << io["name"].get<std::string>() << "[" << io["size"] << "];" << std::endl;
-            } else if(io["type"] == ND_FUNC_IN)
-            {
-                out << "    func_in " << io["name"].get<std::string>() << "(";
-                
-                out << ");" << std::endl;
-            } else if(io["type"] == ND_FUNC_OUT)
-            {
-                out << "    func_out " << io["name"].get<std::string>() << "[" << io["size"] << "];" << std::endl;
-            }
-        }
-        out << "}" << std::endl;
-    }
+    codegenerator->gen(out);
 }
