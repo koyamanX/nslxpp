@@ -7,7 +7,7 @@ class NSLGen : public IGen {
 public:
     NSLGen();
     virtual ~NSLGen();
-    void gen(std::ostream &out = std::cout);
+    void gen(std::ostream &out, std::map<std::string, json> &modules);
 };
 
 #endif

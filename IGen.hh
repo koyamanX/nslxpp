@@ -2,11 +2,16 @@
 #define IGEN_HH
 
 #include <iostream>
+#include <string>
+#include <map>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 class IGen {
 public:
     virtual ~IGen() {};
-    virtual void gen(std::ostream &out = std::cout) = 0;
+    virtual void gen(std::ostream &out, std::map<std::string, json> &modules) = 0;
 };
 
 #endif
