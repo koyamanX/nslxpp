@@ -14,21 +14,22 @@ NSLGen::~NSLGen()
 void NSLGen::gen_declare(const std::string &name, const std::map<std::string, json> &symtab) {
     out << "declare " << name;
     gen_opening_brace();
-    for(auto &signal : symtab)
+    for(auto &i : symtab)
     {
-        switch(signal.second["type"].get<NSLXPP::NodeType>())
+        auto &signal = i.second;
+        switch(signal["type"].get<NSLXPP::NodeType>())
         {
             case NSLXPP::ND_INPUT:
-                gen_input(signal.second.get<json>());
+                gen_input(signal.get<json>());
                 break;
             case NSLXPP::ND_OUTPUT:
-                gen_output(signal.second.get<json>());
+                gen_output(signal.get<json>());
                 break;
             case NSLXPP::ND_FUNC_IN:
-                gen_func_in(signal.second.get<json>());
+                gen_func_in(signal.get<json>());
                 break;
             case NSLXPP::ND_FUNC_OUT:
-                gen_func_out(signal.second.get<json>());
+                gen_func_out(signal.get<json>());
                 break;
         }
     }
@@ -70,11 +71,8 @@ void NSLGen::gen_func_in_params(const std::vector<json> &params) {
 }
 
 void NSLGen::gen_func_in_return(const json &ret) {
-    if(!ret.is_null())
-    {
-        out << " : ";
-        out << ret.get<std::string>();
-    }
+    out << " : ";
+    out << ret.get<std::string>();
 }
 
 void NSLGen::gen_func_out(const json &signal) {
@@ -104,18 +102,17 @@ void NSLGen::gen_func_out_params(const std::vector<json> &params) {
 }
 
 void NSLGen::gen_func_out_return(const json &ret) {
-    if(!ret.is_null())
-    {
-        out << " : ";
-        out << ret.get<std::string>();
-    }
+    out << " : ";
+    out << ret.get<std::string>();
 }
 
 void NSLGen::gen(std::map<std::string, json> &modules)
 {
     for(auto &module : modules)
     {
-        gen_declare(module.first, module.second["signals"].get<std::map<std::string, json>>());
+        auto &name = module.first;
+        auto symtab = module.second["signals"].get<std::map<std::string, json>>();
+        gen_declare(name, symtab);
     
     }
 }
