@@ -21,7 +21,7 @@ all: $(TOP)
 	$(CXX) $(CXXFLAGS) -MM -MT $(@:.d=.o) $< -o $@
 nslxpp.tab.cc: nslxpp.yy
 	$(BISON) $(BISONOPT) -o $@ $<
-lex.yy.cc: nslxpp.ll nslxpp.tab.hh
+lex.yy.cc: nslxpp.ll nslxpp.tab.cc
 	$(FLEX) $(FLEXOPT) -o $@ $<
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
