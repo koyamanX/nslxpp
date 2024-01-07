@@ -105,6 +105,20 @@ nsl:
 		$$ = move($1);
 	}
 	| module_definition {
+		auto declare = nslxpp.take_declare($1["name"]);
+		if (declare.is_null()) {
+			std::cerr << "error: module " << $1["name"] << " is not declared" << std::endl;
+			exit(1);
+		}
+		auto &signals = $1["signals"];
+		// Find duplicate before merge
+		for (auto &sig : declare["io"]) {
+			if (signals.find(sig["name"]) != signals.end()) {
+				std::cerr << "error: duplicate declaration of " << sig["name"] << std::endl;
+				exit(1);
+			}
+		}
+		signals.insert(declare["io"].begin(), declare["io"].end());
 		nslxpp.add_module($1["name"], $1);
 		$$ = move($1);
 	}

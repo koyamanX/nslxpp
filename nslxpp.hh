@@ -18,6 +18,7 @@ public:
     void add_module(const std::string &name, json &module);
     void add_declare(const std::string &name, json &module);
     json find_declare(const std::string &name);
+	json take_declare(const std::string &name);
     json find_module(const std::string &name);
     void gen(std::ostream &out = std::cout);
 

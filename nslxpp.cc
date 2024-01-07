@@ -68,6 +68,21 @@ json NSLXPP::NSLXPP_Driver::find_declare(const std::string &name)
     }
 }
 
+json NSLXPP::NSLXPP_Driver::take_declare(const std::string &name)
+{
+    auto it = declares.find(name);
+    if(it != declares.end())
+    {
+        json ret = it->second;
+        declares.erase(it);
+        return ret;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
 void NSLXPP::NSLXPP_Driver::gen(std::ostream &out)
 {
     codegenerator->gen(out);
