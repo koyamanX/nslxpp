@@ -117,12 +117,10 @@ void NSLGen::gen_opening_brace()
 {
     out << " {" << std::endl;
     indent++;
-    out.width(indent * 4);
 }
 
 void NSLGen::gen_closing_brace()
 {
     out << "}" << std::endl;
     indent--;
-    out.width(indent * 4);
 }
