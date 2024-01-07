@@ -8,24 +8,22 @@
 namespace NSLXPP {
 
 class NSLXPP_Scanner : public yyFlexLexer {
-public:
+ public:
+  NSLXPP_Scanner(std::istream *in = 0)
+      : yyFlexLexer(in){
 
-    NSLXPP_Scanner(std::istream *in = 0): yyFlexLexer(in)
-    {
+        };
+  virtual ~NSLXPP_Scanner(){
 
-    };
-    virtual ~NSLXPP_Scanner()
-    {
+  };
+  using FlexLexer::yylex;
 
-    };
-    using FlexLexer::yylex;
+  virtual int yylex(NSLXPP_Parser::value_type *const lval,
+                    NSLXPP_Parser::location_type *location);
 
-    virtual int yylex(NSLXPP_Parser::value_type * const lval,
-                      NSLXPP_Parser::location_type *location);
-
-private:
-    NSLXPP_Parser::value_type *yylval = nullptr;
+ private:
+  NSLXPP_Parser::value_type *yylval = nullptr;
 };
-}
+}  // namespace NSLXPP
 
 #endif
