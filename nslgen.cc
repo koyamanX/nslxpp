@@ -47,7 +47,8 @@ void NSLGen::gen_output(const json &signal) {
   out << "output " << signal_name << "[" << signal_size << "];" << std::endl;
 }
 
-void NSLGen::gen_func_in(const json &signal, const std::map<std::string, json> &symtab) {
+void NSLGen::gen_func_in(const json &signal,
+                         const std::map<std::string, json> &symtab) {
   auto signal_name = signal["name"].get<std::string>();
 
   out << "func_in " << signal_name << "(";
@@ -65,20 +66,22 @@ void NSLGen::gen_func_in(const json &signal, const std::map<std::string, json> &
   out << ";" << std::endl;
 }
 
-void NSLGen::gen_func_in_params(const std::vector<json> &params, const std::map<std::string, json> &symtab) {
+void NSLGen::gen_func_in_params(const std::vector<json> &params,
+                                const std::map<std::string, json> &symtab) {
   if (params.size() > 0) {
     for (auto &param : params) {
       auto param_name = param.get<std::string>();
       auto symbol = symtab.find(param_name);
 
-      if(symbol == symtab.end()) {
+      if (symbol == symtab.end()) {
         out << "ERROR: " << param_name << " is not a signal" << std::endl;
         exit(1);
       }
       auto symbol_type = symbol->second["type"].get<NSLXPP::NodeType>();
 
-      if(symbol_type != NSLXPP::ND_INPUT) {
-        out << "ERROR: " << param_name << " is not an input signal" << std::endl;
+      if (symbol_type != NSLXPP::ND_INPUT) {
+        out << "ERROR: " << param_name << " is not an input signal"
+            << std::endl;
         exit(1);
       }
 
@@ -90,17 +93,18 @@ void NSLGen::gen_func_in_params(const std::vector<json> &params, const std::map<
   }
 }
 
-void NSLGen::gen_func_in_return(const json &ret, const std::map<std::string, json> &symtab) {
+void NSLGen::gen_func_in_return(const json &ret,
+                                const std::map<std::string, json> &symtab) {
   auto return_name = ret.get<std::string>();
   auto symbol = symtab.find(return_name);
-  
-  if(symbol == symtab.end()) {
+
+  if (symbol == symtab.end()) {
     out << "ERROR: " << return_name << " is not a signal" << std::endl;
     exit(1);
   }
   auto symbol_type = symbol->second["type"].get<NSLXPP::NodeType>();
 
-  if(symbol_type != NSLXPP::ND_OUTPUT) {
+  if (symbol_type != NSLXPP::ND_OUTPUT) {
     out << "ERROR: " << return_name << " is not an output signal" << std::endl;
     exit(1);
   }
@@ -109,7 +113,8 @@ void NSLGen::gen_func_in_return(const json &ret, const std::map<std::string, jso
   out << return_name;
 }
 
-void NSLGen::gen_func_out(const json &signal, const std::map<std::string, json> &symtab) {
+void NSLGen::gen_func_out(const json &signal,
+                          const std::map<std::string, json> &symtab) {
   auto signal_name = signal["name"].get<std::string>();
 
   out << "func_out " << signal_name << "(";
@@ -127,20 +132,22 @@ void NSLGen::gen_func_out(const json &signal, const std::map<std::string, json> 
   out << ";" << std::endl;
 }
 
-void NSLGen::gen_func_out_params(const std::vector<json> &params, const std::map<std::string, json> &symtab) {
+void NSLGen::gen_func_out_params(const std::vector<json> &params,
+                                 const std::map<std::string, json> &symtab) {
   if (params.size() > 0) {
     for (auto &param : params) {
       auto param_name = param.get<std::string>();
       auto symbol = symtab.find(param_name);
 
-      if(symbol == symtab.end()) {
+      if (symbol == symtab.end()) {
         out << "ERROR: " << param_name << " is not a signal" << std::endl;
         exit(1);
       }
       auto symbol_type = symbol->second["type"].get<NSLXPP::NodeType>();
 
-      if(symbol_type != NSLXPP::ND_OUTPUT) {
-        out << "ERROR: " << param_name << " is not an output signal" << std::endl;
+      if (symbol_type != NSLXPP::ND_OUTPUT) {
+        out << "ERROR: " << param_name << " is not an output signal"
+            << std::endl;
         exit(1);
       }
 
@@ -152,17 +159,18 @@ void NSLGen::gen_func_out_params(const std::vector<json> &params, const std::map
   }
 }
 
-void NSLGen::gen_func_out_return(const json &ret, const std::map<std::string, json> &symtab) {
+void NSLGen::gen_func_out_return(const json &ret,
+                                 const std::map<std::string, json> &symtab) {
   auto return_name = ret.get<std::string>();
   auto symbol = symtab.find(return_name);
 
-  if(symbol == symtab.end()) {
+  if (symbol == symtab.end()) {
     out << "ERROR: " << return_name << " is not a signal" << std::endl;
     exit(1);
   }
   auto symbol_type = symbol->second["type"].get<NSLXPP::NodeType>();
 
-  if(symbol_type != NSLXPP::ND_INPUT) {
+  if (symbol_type != NSLXPP::ND_INPUT) {
     out << "ERROR: " << return_name << " is not an input signal" << std::endl;
     exit(1);
   }
