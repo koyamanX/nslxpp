@@ -8,22 +8,22 @@
 namespace NSLXX {
 
 class NSLXX_Scanner : public yyFlexLexer {
- public:
-  NSLXX_Scanner(std::istream *in = 0)
-      : yyFlexLexer(in){
+public:
+    NSLXX_Scanner(std::istream* in = 0)
+        : yyFlexLexer(in) {
 
         };
-  virtual ~NSLXX_Scanner(){
+    virtual ~NSLXX_Scanner() {
 
-  };
-  using FlexLexer::yylex;
+    };
+    using FlexLexer::yylex;
 
-  virtual int yylex(NSLXX_Parser::value_type *const lval,
-                    NSLXX_Parser::location_type *location);
+    virtual int yylex(NSLXX_Parser::value_type* const lval,
+        NSLXX_Parser::location_type* location);
 
- private:
-  NSLXX_Parser::value_type *yylval = nullptr;
+private:
+    NSLXX_Parser::value_type* yylval = nullptr;
 };
-}  // namespace NSLXX
+} // namespace NSLXX
 
 #endif

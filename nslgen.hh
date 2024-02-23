@@ -5,12 +5,12 @@
 #include "node.hh"
 
 class NSLGen : public IGen {
- public:
-  NSLGen(std::ostream &out);
-  void gen(std::map<std::string, Node *> &modules);
+public:
+    NSLGen(std::ostream& out);
+    void gen(std::map<std::string, Node*>& modules);
 
- private:
-  std::ostream &out;
+private:
+    std::ostream& out;
 };
 
 #endif

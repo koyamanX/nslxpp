@@ -52,32 +52,33 @@ typedef struct Node Node;
 struct Node {
     NodeKind kind;
     NodeType type;
-    ScopeNode *scope;
-    std::vector<Node *> *common_tasks;
-    Node *left;
-    Node *right;
+    ScopeNode* scope;
+    std::vector<Node*>* common_tasks;
+    Node* left;
+    Node* right;
     size_t width;
     size_t depth;
     std::string name;
-};
 
-Node *new_node_declare(ScopeNode *scope);
-Node *new_node_module(ScopeNode *scope, std::vector<Node *> *common_tasks);
-Node *new_node_assign(Node *left, Node *right);
-Node *new_node_identifier(NodeKind type, size_t width);
-Node *new_node_wire(size_t width);
-Node *new_node_wire(void);
-Node *new_node_reg(size_t width);
-Node *new_node_reg(void);
-Node *new_node_mem(size_t width);
-Node *new_node_mem(size_t width, size_t depth);
-Node *new_node_lvalue(std::string name);
-Node *new_node_input(size_t width);
-Node *new_node_input();
-Node *new_node_output(size_t width);
-Node *new_node_output();
-Node *new_node_expression(NodeType type, Node *left, Node *right);
-Node *new_node_expression(NodeType type, Node *left);
-Node *new_node_element(std::string name);
+    static Node* new_node_declare(ScopeNode* scope);
+    static Node* new_node_module(ScopeNode* scope,
+        std::vector<Node*>* common_tasks);
+    static Node* new_node_assign(Node* left, Node* right);
+    static Node* new_node_identifier(NodeKind type, size_t width);
+    static Node* new_node_wire(size_t width);
+    static Node* new_node_wire(void);
+    static Node* new_node_reg(size_t width);
+    static Node* new_node_reg(void);
+    static Node* new_node_mem(size_t width);
+    static Node* new_node_mem(size_t width, size_t depth);
+    static Node* new_node_lvalue(std::string name);
+    static Node* new_node_input(size_t width);
+    static Node* new_node_input();
+    static Node* new_node_output(size_t width);
+    static Node* new_node_output();
+    static Node* new_node_expression(NodeType type, Node* left, Node* right);
+    static Node* new_node_expression(NodeType type, Node* left);
+    static Node* new_node_element(std::string name);
+};
 
 #endif // NODE_HH
