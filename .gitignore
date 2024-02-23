@@ -1,7 +1,7 @@
 lex.yy.cc
-nslxpp
-nslxpp.tab.cc
-nslxpp.tab.hh
+nslxx
+nslxx.tab.cc
+nslxx.tab.hh
 location.hh
 position.hh
 stack.hh

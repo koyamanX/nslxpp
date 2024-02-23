@@ -1,5 +1,5 @@
-#ifndef NSLXPP_HH
-#define NSLXPP_HH
+#ifndef NSLXX_HH
+#define NSLXX_HH
 
 #include <iostream>
 #include <map>
@@ -9,11 +9,11 @@
 
 #include "IGen.hh"
 
-namespace NSLXPP {
-class NSLXPP_Driver {
+namespace NSLXX {
+class NSLXX_Driver {
  public:
-  NSLXPP_Driver(IGen *gen);
-  virtual ~NSLXPP_Driver();
+  NSLXX_Driver(IGen *gen);
+  virtual ~NSLXX_Driver();
   void gen(std::ostream &out = std::cout);
   void parse(std::istream &in = std::cin);
 
@@ -23,6 +23,6 @@ private:
   IGen *codegenerator;
 };
 
-}  // namespace NSLXPP
+}  // namespace NSLXX
 
 #endif

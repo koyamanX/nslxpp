@@ -3,8 +3,8 @@
 %defines
 %define api.value.type variant
 //%define api.token.constructor
-%define api.namespace {NSLXPP}
-%define api.parser.class {NSLXPP_Parser}
+%define api.namespace {NSLXX}
+%define api.parser.class {NSLXX_Parser}
 %locations
 %define parse.error	custom
 
@@ -16,21 +16,21 @@
 #include <fstream>
 #include <sstream>
 #include <memory>
-#include "nslxpp.hh"
+#include "nslxx.hh"
 #include "scope.hh"
 #include "node.hh"
-namespace NSLXPP {
-	class NSLXPP_Parser;
-	class NSLXPP_Scanner;
-	class NSLXPP_Driver; // Added NSLXPP_Driver class
+namespace NSLXX {
+	class NSLXX_Parser;
+	class NSLXX_Scanner;
+	class NSLXX_Driver; // Added NSLXX_Driver class
 }
 }
 
-%parse-param { NSLXPP_Scanner& scanner }
-%parse-param { NSLXPP_Driver &nslxpp }
+%parse-param { NSLXX_Scanner& scanner }
+%parse-param { NSLXX_Driver &nslxx }
 
 %code {
-#include "nslxpp_scanner.hh"
+#include "nslxx_scanner.hh"
 
 #undef yylex
 #define yylex scanner.yylex
@@ -95,16 +95,16 @@ nsl:
 	}
 	;
 module_declaration:
-	DECLARE declare_name '{' {nslxpp.scope.enter();} io_declarations '}' {nslxpp.scope.leave();} {
-		auto node = new_node_declare(nslxpp.scope.get_scope());
-		nslxpp.scope.add_declare($declare_name, node);
+	DECLARE declare_name '{' {nslxx.scope.enter();} io_declarations '}' {nslxx.scope.leave();} {
+		auto node = new_node_declare(nslxx.scope.get_scope());
+		nslxx.scope.add_declare($declare_name, node);
 		$$ = node;
 	}
 	;
 module_definition:
-	MODULE module_name '{' {nslxpp.scope.enter();} common_tasks module_signal_declarations '}' {nslxpp.scope.leave();} {
-		auto node = new_node_module(nslxpp.scope.get_scope(), &$common_tasks);
-		nslxpp.scope.add_module($module_name, node);
+	MODULE module_name '{' {nslxx.scope.enter();} common_tasks module_signal_declarations '}' {nslxx.scope.leave();} {
+		auto node = new_node_module(nslxx.scope.get_scope(), &$common_tasks);
+		nslxx.scope.add_module($module_name, node);
 		$$ = node;
 	}
 	;
@@ -139,36 +139,36 @@ module_signal_declaration:
 wire_declaration:
 	WIRE IDENTIFIER ';' {
 		auto node = new_node_wire();
-		nslxpp.scope.add_var($2, node);
+		nslxx.scope.add_var($2, node);
 		$$ = node;
 	}
 	| WIRE IDENTIFIER '[' NUMBER ']' ';' {
 		auto node = new_node_wire($4);
-		nslxpp.scope.add_var($2, node);
+		nslxx.scope.add_var($2, node);
 		$$ = node;
 	}
 	;
 reg_declaration:
 	REG IDENTIFIER ';' {
 		auto node = new_node_reg();
-		nslxpp.scope.add_var($2, node);
+		nslxx.scope.add_var($2, node);
 		$$ = node;
 	}
 	| REG IDENTIFIER '[' NUMBER ']' ';' {
 		auto node = new_node_reg($4);
-		nslxpp.scope.add_var($2, node);
+		nslxx.scope.add_var($2, node);
 		$$ = node;
 	}
 	;
 mem_declaration:
 	MEM IDENTIFIER '[' NUMBER ']' ';' {
 		auto node = new_node_mem($4);
-		nslxpp.scope.add_var($2, node);
+		nslxx.scope.add_var($2, node);
 		$$ = node;
 	}
 	| MEM IDENTIFIER '[' NUMBER ']' '[' NUMBER ']' ';' {
 		auto node = new_node_mem($4, $7);
-		nslxpp.scope.add_var($2, node);
+		nslxx.scope.add_var($2, node);
 		$$ = node;
 	}
 	;
@@ -190,11 +190,11 @@ io_declaration:
 input_declaration:
 	INPUT input_name ';' {
 		auto node = new_node_input();
-		nslxpp.scope.add_var($input_name, node);
+		nslxx.scope.add_var($input_name, node);
 	}
 	| INPUT input_name '[' NUMBER ']' ';' {
 		auto node = new_node_input($4);
-		nslxpp.scope.add_var($input_name, node);
+		nslxx.scope.add_var($input_name, node);
 	}
 	;
 input_name:
@@ -205,11 +205,11 @@ input_name:
 output_declaration:
 	OUTPUT output_name ';' {
 		auto node = new_node_output();
-		nslxpp.scope.add_var($output_name, node);
+		nslxx.scope.add_var($output_name, node);
 	}
 	| OUTPUT output_name '[' NUMBER ']' ';' {
 		auto node = new_node_output($4);
-		nslxpp.scope.add_var($output_name, node);
+		nslxx.scope.add_var($output_name, node);
 	}
 	;
 output_name:

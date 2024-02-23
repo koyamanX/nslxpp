@@ -5,10 +5,10 @@ FLEXOPT=-+
 BISON=bison
 BISONOPT=
 
-TOP=nslxpp
-SRC=nslxpp.tab.cc lex.yy.cc nslxpp.cc main.cc nslgen.cc nslxpp_parser.cc node.cc scope.cc
+TOP=nslxx
+SRC=nslxx.tab.cc lex.yy.cc nslxx.cc main.cc nslgen.cc nslxx_parser.cc node.cc scope.cc
 OBJ=$(SRC:.cc=.o)
-AUTOGEN=nslxpp.tab.cc nslxpp.tab.hh lex.yy.cc position.hh stack.hh location.hh *.d
+AUTOGEN=nslxx.tab.cc nslxx.tab.hh lex.yy.cc position.hh stack.hh location.hh *.d
 
 .PHONY: all clean
 .SUFFIXES: .cc .o .d
@@ -19,11 +19,11 @@ all: $(TOP)
 
 %.tab.cc %.tab.hh: %.yy
 	$(BISON) $(BISONOPT) $<
-lex.yy.cc: nslxpp.ll nslxpp.tab.hh
+lex.yy.cc: nslxx.ll nslxx.tab.hh
 	$(FLEX) $(FLEXOPT) -o $@ $<
-%.o: %.cc nslxpp.tab.hh
+%.o: %.cc nslxx.tab.hh
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-%.d: %.cc nslxpp.tab.hh
+%.d: %.cc nslxx.tab.hh
 	$(CXX) $(CXXFLAGS) -MM -MT $(@:.d=.o) $< -o $@
 $(TOP): $(OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@

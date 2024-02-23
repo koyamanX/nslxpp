@@ -1,6 +1,6 @@
 #include "nslgen.hh"
 
-#include "nslxpp.hh"
+#include "nslxx.hh"
 
 NSLGen::NSLGen(std::ostream &out) : out(out) {}
 

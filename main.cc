@@ -1,10 +1,10 @@
 #include "nslgen.hh"
-#include "nslxpp.hh"
-#include "nslxpp.tab.hh"
+#include "nslxx.hh"
+#include "nslxx.tab.hh"
 
 int main(void) {
-  NSLXPP::NSLXPP_Driver nslxpp(new NSLGen(std::cout));
-  nslxpp.parse(std::cin);
-  nslxpp.gen();
+  NSLXX::NSLXX_Driver nslxx(new NSLGen(std::cout));
+  nslxx.parse(std::cin);
+  nslxx.gen();
   return 0;
 }

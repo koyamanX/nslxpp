@@ -1,10 +1,10 @@
-#include "nslxpp.tab.hh"
+#include "nslxx.tab.hh"
 
-void NSLXPP::NSLXPP_Parser::error(const location_type& loc,
+void NSLXX::NSLXX_Parser::error(const location_type& loc,
                                   const std::string& msg) {}
 
-void NSLXPP::NSLXPP_Parser::report_syntax_error(
-    const NSLXPP::NSLXPP_Parser::context& ctx) const {
+void NSLXX::NSLXX_Parser::report_syntax_error(
+    const NSLXX::NSLXX_Parser::context& ctx) const {
   int res = 0;
   std::cerr << ctx.location() << ": syntax error";
   // Report the tokens expected at this point.
