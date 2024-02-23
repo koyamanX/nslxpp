@@ -16,10 +16,9 @@ class NSLXPP_Driver {
   virtual ~NSLXPP_Driver();
   void gen(std::ostream &out = std::cout);
   void parse(std::istream &in = std::cin);
-  Scope &get_scope() { return scope; }
 
   Scope scope;
- private:
+private:
 
   IGen *codegenerator;
 };
