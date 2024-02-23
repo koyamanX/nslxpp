@@ -173,7 +173,6 @@ mem_declaration:
 	}
 	;
 lvalue:
-	// TODO: search for identifier in symtab
 	output_name {
 		auto node = Node::new_node_lvalue($1);
 		$$ = node;

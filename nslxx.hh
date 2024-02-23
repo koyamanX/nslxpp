@@ -5,21 +5,20 @@
 #include <map>
 #include <memory>
 #include <string>
-
-#include "IGen.hh"
 #include "scope.hh"
+#include "nslgen.hh"
 
 namespace NSLXX {
 class NSLXX_Driver {
 public:
-    NSLXX_Driver(IGen* gen);
+    NSLXX_Driver(NSLGen* gen);
     virtual ~NSLXX_Driver();
-    void gen(std::ostream& out = std::cout);
+    void gen(ScopeNode *global_scope);
     void parse(std::istream& in = std::cin);
     Scope scope;
 
 private:
-    IGen* codegenerator;
+    NSLGen* codegenerator;
 }; // class NSLXX_Driver
 } // namespace NSLXX
 

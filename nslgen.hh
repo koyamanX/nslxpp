@@ -1,13 +1,12 @@
 #ifndef NSLGEN_HH
 #define NSLGEN_HH
 
-#include "IGen.hh"
 #include "node.hh"
 
-class NSLGen : public IGen {
+class NSLGen {
 public:
     NSLGen(std::ostream& out);
-    void gen(std::map<std::string, Node*>& modules);
+    void gen(ScopeNode *global_scope);
 
 private:
     std::ostream& out;

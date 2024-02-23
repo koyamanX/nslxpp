@@ -4,8 +4,9 @@
 
 #include "nslxx.tab.hh"
 #include "nslxx_scanner.hh"
+#include "nslgen.hh"
 
-NSLXX::NSLXX_Driver::NSLXX_Driver(IGen* gen)
+NSLXX::NSLXX_Driver::NSLXX_Driver(NSLGen* gen)
 {
     codegenerator = gen;
 }
@@ -20,7 +21,7 @@ void NSLXX::NSLXX_Driver::parse(std::istream& in)
     parser.parse();
 }
 
-void NSLXX::NSLXX_Driver::gen(std::ostream& out)
+void NSLXX::NSLXX_Driver::gen(ScopeNode *global_scope)
 {
-    // codegenerator->gen(modules);
+    codegenerator->gen(global_scope);
 }

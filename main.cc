@@ -6,6 +6,6 @@ int main(void)
 {
     NSLXX::NSLXX_Driver nslxx(new NSLGen(std::cout));
     nslxx.parse(std::cin);
-    nslxx.gen();
+    nslxx.gen(nslxx.scope.get_scope());
     return 0;
 }
