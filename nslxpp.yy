@@ -90,7 +90,7 @@ nsl:
 		$$ = $1;
 	}
 	| module_definition {
-		
+		$$ = $1;
 	}
 	;
 module_declaration:
