@@ -3,15 +3,13 @@
 
 #include <iostream>
 #include <map>
-#include <nlohmann/json.hpp>
 #include <string>
-
-using json = nlohmann::json;
+#include "node.hh"
 
 class IGen {
  public:
   virtual ~IGen(){};
-  virtual void gen(std::map<std::string, json> &modules) = 0;
+  virtual void gen(std::map<std::string, Node *> &modules) = 0;
 };
 
 #endif
