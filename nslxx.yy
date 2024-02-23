@@ -55,6 +55,7 @@ namespace NSLXX {
 %type <std::string> declare_name
 
 %type <Node *> module_definition
+%type <ScopeNode *> module_signal_declarations
 %type <std::vector<Node *>> common_tasks
 %type <Node *> common_task
 %type <Node *> lvalue
@@ -96,14 +97,14 @@ nsl:
 	;
 module_declaration:
 	DECLARE declare_name '{' {nslxx.scope.enter();} io_declarations '}' {nslxx.scope.leave();} {
-		auto node = Node::new_node_declare(nslxx.scope.get_scope());
+		auto node = Node::new_node_declare($io_declarations);
 		nslxx.scope.add_declare($declare_name, node);
 		$$ = node;
 	}
 	;
 module_definition:
-	MODULE module_name '{' {nslxx.scope.enter();} common_tasks module_signal_declarations '}' {nslxx.scope.leave();} {
-		auto node = Node::new_node_module(nslxx.scope.get_scope(), &$common_tasks);
+	MODULE module_name '{' {nslxx.scope.enter();} module_signal_declarations common_tasks '}' {nslxx.scope.leave();} {
+		auto node = Node::new_node_module($module_signal_declarations, &$common_tasks);
 		nslxx.scope.add_module($module_name, node);
 		$$ = node;
 	}
@@ -128,8 +129,8 @@ common_task:
 	}
 	;
 module_signal_declarations:
-	module_signal_declarations module_signal_declaration {}
-	| {} /* empty */
+	module_signal_declarations module_signal_declaration {$$ = nslxx.scope.get_scope();}
+	| {$$ = nslxx.scope.get_scope();} /* empty */
 	;
 module_signal_declaration:
 	wire_declaration {}
@@ -179,8 +180,8 @@ lvalue:
 	}
 	;
 io_declarations:
-	io_declarations io_declaration {}
-	| {} /* empty */
+	io_declarations io_declaration {$$ = nslxx.scope.get_scope();}
+	| { $$ = nslxx.scope.get_scope();} /* empty */
 	;
 io_declaration:
 	input_declaration {}

@@ -28,7 +28,6 @@ void Scope::leave()
     }
     ScopeNode* old_scope = scope;
     scope = scope->parent;
-    delete old_scope;
 }
 
 void Scope::add_var(const std::string& name, Node* var)
