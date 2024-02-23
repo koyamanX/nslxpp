@@ -6,7 +6,7 @@ BISON=bison
 BISONOPT=
 
 TOP=nslxpp
-SRC=nslxpp.tab.cc lex.yy.cc nslxpp.cc main.cc nslgen.cc nslxpp_parser.cc node.cc
+SRC=nslxpp.tab.cc lex.yy.cc nslxpp.cc main.cc nslgen.cc nslxpp_parser.cc node.cc scope.cc
 OBJ=$(SRC:.cc=.o)
 AUTOGEN=nslxpp.tab.cc nslxpp.tab.hh lex.yy.cc position.hh stack.hh location.hh *.d
 
