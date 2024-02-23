@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include "scope.hh"
 
 #include "IGen.hh"
 
@@ -14,10 +15,12 @@ class NSLXPP_Driver {
   NSLXPP_Driver(IGen *gen);
   virtual ~NSLXPP_Driver();
   void gen(std::ostream &out = std::cout);
-
   void parse(std::istream &in = std::cin);
+  Scope &get_scope() { return scope; }
 
+  Scope scope;
  private:
+
   IGen *codegenerator;
 };
 

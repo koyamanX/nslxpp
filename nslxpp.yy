@@ -22,6 +22,7 @@
 namespace NSLXPP {
 	class NSLXPP_Parser;
 	class NSLXPP_Scanner;
+	class NSLXPP_Driver; // Added NSLXPP_Driver class
 }
 }
 
@@ -33,7 +34,7 @@ namespace NSLXPP {
 
 #undef yylex
 #define yylex scanner.yylex
-Scope scope;
+
 }
 
 %token DECLARE MODULE STRUCT
@@ -94,16 +95,16 @@ nsl:
 	}
 	;
 module_declaration:
-	DECLARE declare_name '{' {scope.enter();} io_declarations '}' {scope.leave();} {
-		auto node = new_node_declare(scope.get_scope());
-		scope.add_declare($declare_name, node);
+	DECLARE declare_name '{' {nslxpp.scope.enter();} io_declarations '}' {nslxpp.scope.leave();} {
+		auto node = new_node_declare(nslxpp.scope.get_scope());
+		nslxpp.scope.add_declare($declare_name, node);
 		$$ = node;
 	}
 	;
 module_definition:
-	MODULE module_name '{' {scope.enter();} common_tasks module_signal_declarations '}' {scope.leave();} {
-		auto node = new_node_module(scope.get_scope(), &$common_tasks);
-		scope.add_module($module_name, node);
+	MODULE module_name '{' {nslxpp.scope.enter();} common_tasks module_signal_declarations '}' {nslxpp.scope.leave();} {
+		auto node = new_node_module(nslxpp.scope.get_scope(), &$common_tasks);
+		nslxpp.scope.add_module($module_name, node);
 		$$ = node;
 	}
 	;
@@ -138,36 +139,36 @@ module_signal_declaration:
 wire_declaration:
 	WIRE IDENTIFIER ';' {
 		auto node = new_node_wire();
-		scope.add_var($2, node);
+		nslxpp.scope.add_var($2, node);
 		$$ = node;
 	}
 	| WIRE IDENTIFIER '[' NUMBER ']' ';' {
 		auto node = new_node_wire($4);
-		scope.add_var($2, node);
+		nslxpp.scope.add_var($2, node);
 		$$ = node;
 	}
 	;
 reg_declaration:
 	REG IDENTIFIER ';' {
 		auto node = new_node_reg();
-		scope.add_var($2, node);
+		nslxpp.scope.add_var($2, node);
 		$$ = node;
 	}
 	| REG IDENTIFIER '[' NUMBER ']' ';' {
 		auto node = new_node_reg($4);
-		scope.add_var($2, node);
+		nslxpp.scope.add_var($2, node);
 		$$ = node;
 	}
 	;
 mem_declaration:
 	MEM IDENTIFIER '[' NUMBER ']' ';' {
 		auto node = new_node_mem($4);
-		scope.add_var($2, node);
+		nslxpp.scope.add_var($2, node);
 		$$ = node;
 	}
 	| MEM IDENTIFIER '[' NUMBER ']' '[' NUMBER ']' ';' {
 		auto node = new_node_mem($4, $7);
-		scope.add_var($2, node);
+		nslxpp.scope.add_var($2, node);
 		$$ = node;
 	}
 	;
@@ -189,11 +190,11 @@ io_declaration:
 input_declaration:
 	INPUT input_name ';' {
 		auto node = new_node_input();
-		scope.add_var($input_name, node);
+		nslxpp.scope.add_var($input_name, node);
 	}
 	| INPUT input_name '[' NUMBER ']' ';' {
 		auto node = new_node_input($4);
-		scope.add_var($input_name, node);
+		nslxpp.scope.add_var($input_name, node);
 	}
 	;
 input_name:
@@ -204,11 +205,11 @@ input_name:
 output_declaration:
 	OUTPUT output_name ';' {
 		auto node = new_node_output();
-		scope.add_var($output_name, node);
+		nslxpp.scope.add_var($output_name, node);
 	}
 	| OUTPUT output_name '[' NUMBER ']' ';' {
 		auto node = new_node_output($4);
-		scope.add_var($output_name, node);
+		nslxpp.scope.add_var($output_name, node);
 	}
 	;
 output_name:
