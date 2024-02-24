@@ -9,6 +9,7 @@
 typedef struct ScopeNode ScopeNode;
 struct ScopeNode {
     ScopeNode* parent;
+    // TODO: use a union for vars, modules, and declares
     std::map<std::string, Node*> vars;
     std::map<std::string, Node*> modules;
     std::map<std::string, Node*> declares;
