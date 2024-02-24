@@ -47,14 +47,12 @@ namespace NSLXX {
 %token PROC_NAME
 %token STATE_NAME
 
-%type <Node *> module_declaration
 %type <std::string> module_name
 %type <ScopeNode *> io_declarations
 %type <std::string> input_name
 %type <std::string> output_name
 %type <std::string> declare_name
 
-%type <Node *> module_definition
 %type <ScopeNode *> module_signal_declarations
 %type <std::vector<Node *>> common_tasks
 %type <Node *> common_task
@@ -76,7 +74,7 @@ namespace NSLXX {
 %type <Node *> wire_declaration
 %type <Node *> reg_declaration
 %type <Node *> mem_declaration
-%type <Node *> nsl
+
 %%
 top:
 	init nsls
@@ -88,25 +86,19 @@ nsls:
 	|
 	;
 nsl:
-	module_declaration {
-		$$ = $1;
-	}
-	| module_definition {
-		$$ = $1;
-	}
+	module_declaration
+	| module_definition
 	;
 module_declaration:
 	DECLARE declare_name '{' {nslxx.scope.enter();} io_declarations '}' {nslxx.scope.leave();} {
 		auto node = Node::new_node_declare($io_declarations);
 		nslxx.scope.add_declare($declare_name, node);
-		$$ = node;
 	}
 	;
 module_definition:
 	MODULE module_name '{' {nslxx.scope.enter();} module_signal_declarations common_tasks '}' {nslxx.scope.leave();} {
 		auto node = Node::new_node_module($module_signal_declarations, &$common_tasks);
 		nslxx.scope.add_module($module_name, node);
-		$$ = node;
 	}
 	;
 declare_name:
