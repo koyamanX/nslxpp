@@ -31,6 +31,7 @@ public:
 
 private:
     ScopeNode* scope;
+    ScopeNode *global;
 };
 
 #endif // SCOPE_HH

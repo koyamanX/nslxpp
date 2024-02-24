@@ -97,8 +97,16 @@ module_declaration:
 	;
 module_definition:
 	MODULE module_name '{' {nslxx.scope.enter();} module_signal_declarations common_tasks '}' {nslxx.scope.leave();} {
+		auto declare = nslxx.scope.find_declare($module_name);
+		for (auto &var : declare->scope->vars) {
+			// Check if not exist in $module_signal_declarations var list
+			if ($module_signal_declarations->vars.find(var.first) != $module_signal_declarations->vars.end()) {
+				std::cerr << "Error: " << var.first << " is already declared in module " << $module_name << std::endl;
+			}
+			$module_signal_declarations->vars[var.first] = var.second;
+		}
 		auto node = Node::new_node_module($module_signal_declarations, &$common_tasks);
-		nslxx.scope.add_module($module_name, node);
+		nslxx.scope.add_module($module_name, node);;
 	}
 	;
 declare_name:

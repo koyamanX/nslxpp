@@ -11,9 +11,9 @@ static void gen_io_list(ScopeNode *scope)
 {
     for (auto& var : scope->vars) {
         if (var.second->kind == ND_INPUT) {
-            std::cout << "    input " << var.first << ": " << "UINT<" << var.second->width << ">" << std::endl;
+            std::cout << "    input " << var.first << ": " << "UInt<" << var.second->width << ">" << std::endl;
         } else if (var.second->kind == ND_OUTPUT) {
-            std::cout << "    output " << var.first << ": " << "UINT<" << var.second->width << ">" << std::endl;
+            std::cout << "    output " << var.first << ": " << "UInt<" << var.second->width << ">" << std::endl;
         }
     }
 }
@@ -28,7 +28,7 @@ static void gen_variables(ScopeNode *scope)
 {
     for (auto& var : scope->vars) {
         if (var.second->kind == ND_WIRE) {
-            std::cout << "    wire " << var.first << ": " << "UINT<" << var.second->width << ">" << std::endl;
+            std::cout << "    wire " << var.first << ": " << "UInt<" << var.second->width << ">" << std::endl;
         }
     }
 }
@@ -46,10 +46,10 @@ static void merge_scope(ScopeNode *dst, ScopeNode *src)
 
 static void gen_module(std::string name, Node *module, Node *declare)
 {
-    std::cout << "cuircit " << name << ":" << std::endl;
+    std::cout << "circuit " << name << ":" << std::endl;
     std::cout << "  module " << name << ":" << std::endl;
     gen_clock_and_reset();
-    merge_scope(module->scope, declare->scope);
+    //merge_scope(module->scope, declare->scope);
     gen_io_list(module->scope);
     gen_variables(module->scope);
 
