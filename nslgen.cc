@@ -33,12 +33,23 @@ static void gen_variables(ScopeNode *scope)
     }
 }
 
+static void merge_scope(ScopeNode *dst, ScopeNode *src)
+{
+    for (auto& var : src->vars) {
+        if (dst->vars.find(var.first) != dst->vars.end()) {
+            std::cout << "var " << var.first << " already exists" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        dst->vars[var.first] = var.second;
+    }
+}
+
 static void gen_module(std::string name, Node *module, Node *declare)
 {
     std::cout << "cuircit " << name << ":" << std::endl;
     std::cout << "  module " << name << ":" << std::endl;
     gen_clock_and_reset();
-    module->scope->vars.insert(declare->scope->vars.begin(), declare->scope->vars.end());
+    merge_scope(module->scope, declare->scope);
     gen_io_list(module->scope);
     gen_variables(module->scope);
 
