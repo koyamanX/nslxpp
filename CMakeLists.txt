@@ -19,4 +19,8 @@ find_library(FLEXPP_LIBRARIES fl)
 
 find_path(FLEXPP_INCLUDE_PATH FlexLexer.h)
 
+include(CTest)
+enable_testing()
+
 add_subdirectory(src)
+add_subdirectory(tests)
