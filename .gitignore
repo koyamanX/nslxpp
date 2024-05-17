@@ -8,3 +8,4 @@ stack.hh
 .vscode
 *.o
 *.d
+build
