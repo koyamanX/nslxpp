@@ -46,7 +46,10 @@ static void merge_scope(ScopeNode *dst, ScopeNode *src)
 
 static void gen_simulation(Node *node)
 {
-	std::cout << "  stop(m_clock, halt, " << node->value << ")" << std::endl;
+	std::cout << "    wire halt: UInt<1>" << std::endl;
+	std::cout << "    halt <= UInt(1)" << std::endl;
+	std::cout << "    stop(m_clock, halt, " << node->value << ")" << std::endl;
+
 }
 
 static void gen_module(std::string name, Node *module, Node *declare)
@@ -56,9 +59,6 @@ static void gen_module(std::string name, Node *module, Node *declare)
     gen_clock_and_reset();
     //merge_scope(module->scope, declare->scope);
     gen_io_list(module->scope);
-	if(module->is_simulation) {
-		std::cout << "  wire halt: UInt<1>" << std::endl;
-	}
     gen_variables(module->scope);
 
 	for(auto& task : module->common_tasks) {

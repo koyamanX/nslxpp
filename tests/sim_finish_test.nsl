@@ -1,4 +1,4 @@
-declare Test {}
+declare Test simulation {}
 module Test {
 	_finish();
 }
