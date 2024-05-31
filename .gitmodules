@@ -1,0 +1,3 @@
+[submodule "3rd_party/firrtl"]
+	path = 3rd_party/firrtl
+	url = https://github.com/chipsalliance/firrtl
