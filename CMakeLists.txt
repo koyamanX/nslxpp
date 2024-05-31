@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(nslxx VERSION 0.0.1 LANGUAGES CXX)
+include(ExternalProject)
 
 find_package(BISON REQUIRED)
 if(NOT BISON_FOUND)
@@ -24,3 +25,12 @@ enable_testing()
 
 add_subdirectory(src)
 add_subdirectory(tests)
+
+externalProject_add(firrtl
+	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rd_party/firrtl
+	CONFIGURE_COMMAND ""
+	BUILD_COMMAND sbt compile && sbt assembly
+	BUILD_IN_SOURCE 1
+	INSTALL_COMMAND ""
+)
+
