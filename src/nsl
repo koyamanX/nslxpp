@@ -1,0 +1,35 @@
+#!/bin/bash
+
+CC=./nslxx
+FIRRTL=./firrtl
+
+help() {
+	echo "Usage: nsl <input_file> -o <output_file>"
+}
+
+nsl() {
+	# create tmp file
+	TMP=$(mktemp)
+	$CC $1 > $TMP
+	$FIRRTL -i $TMP -o $2 -X verilog
+}
+
+if [ $# -eq 0 ]; then
+	help
+	exit 1
+fi
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		-o)
+			shift
+			nsl $1 $(basename $2)
+			shift
+			shift
+			;;
+		*)
+			nsl $1 $(basename $1 .nsl).v
+			shift
+			;;
+	esac
+done

@@ -25,3 +25,5 @@ target_include_directories(nslxx PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 target_include_directories(nslxx PRIVATE ../include)
 
+install(TARGETS nslxx DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/nsl DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

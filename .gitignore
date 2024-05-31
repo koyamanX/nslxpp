@@ -1,11 +1,3 @@
-lex.yy.cc
-nslxx
-nslxx.tab.cc
-nslxx.tab.hh
-location.hh
-position.hh
-stack.hh
 .vscode
-*.o
-*.d
 build
+bin
