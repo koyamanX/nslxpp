@@ -19,6 +19,7 @@ typedef enum {
     ND_MEM,
     ND_EXPRESSION,
     ND_ELEMENT,
+    ND_SIM_FINISH,
 } NodeKind;
 
 typedef enum {
@@ -53,16 +54,18 @@ struct Node {
     NodeKind kind;
     NodeType type;
     ScopeNode* scope;
-    std::vector<Node*>* common_tasks;
+    std::vector<Node*> common_tasks;
     Node* left;
     Node* right;
     size_t width;
     size_t depth;
     std::string name;
+    int value;
+	bool is_simulation;
 
-    static Node* new_node_declare(ScopeNode* scope);
+    static Node* new_node_declare(ScopeNode* scope, bool is_simulation=false);
     static Node* new_node_module(ScopeNode* scope,
-        std::vector<Node*>* common_tasks);
+        std::vector<Node*> common_tasks);
     static Node* new_node_assign(Node* left, Node* right);
     static Node* new_node_identifier(NodeKind type, size_t width);
     static Node* new_node_wire(size_t width);
@@ -79,6 +82,7 @@ struct Node {
     static Node* new_node_expression(NodeType type, Node* left, Node* right);
     static Node* new_node_expression(NodeType type, Node* left);
     static Node* new_node_element(std::string name);
+    static Node* new_node_sim_finish(int exit_code);
 };
 
 #endif // NODE_HH

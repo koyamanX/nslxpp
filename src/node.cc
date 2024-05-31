@@ -1,14 +1,15 @@
 #include "node.hh"
 
-Node* Node::new_node_declare(ScopeNode* scope)
+Node* Node::new_node_declare(ScopeNode* scope, bool is_simulation)
 {
     Node* node = new Node {};
     node->kind = ND_DECLARE;
     node->scope = scope;
+	node->is_simulation = is_simulation;
     return node;
 }
 
-Node* Node::new_node_module(ScopeNode* scope, std::vector<Node*>* common_tasks)
+Node* Node::new_node_module(ScopeNode* scope, std::vector<Node*> common_tasks)
 {
     Node* node = new Node {};
     node->kind = ND_MODULE;
@@ -137,3 +138,13 @@ Node* Node::new_node_element(std::string name)
     node->name = name;
     return node;
 }
+
+Node* Node::new_node_sim_finish(int exit_code)
+{
+    Node* node = new Node {};
+    node->kind = ND_SIM_FINISH;
+    node->value = exit_code;
+    return node;
+}
+
+

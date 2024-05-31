@@ -55,6 +55,12 @@ state_name {
 proc_name {
 	return NSLXX_Parser::token::PROC_NAME;
 }
+_finish {
+	return NSLXX_Parser::token::SIM_FINISH;
+}
+simulation {
+	return NSLXX_Parser::token::SIMULATION;
+}
 [A-Za-z][_A-Za-z0-9]* {
 	//yylval.ident = strdup(yytext);
 	yylval->build<std::string>(yytext);

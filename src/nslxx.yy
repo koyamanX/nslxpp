@@ -46,6 +46,8 @@ namespace NSLXX {
 %token WIRE REG MEM
 %token PROC_NAME
 %token STATE_NAME
+%token SIM_FINISH
+%token SIMULATION
 
 %type <std::string> module_name
 %type <ScopeNode *> io_declarations
@@ -74,6 +76,7 @@ namespace NSLXX {
 %type <Node *> wire_declaration
 %type <Node *> reg_declaration
 %type <Node *> mem_declaration
+%type <Node *> simulation_statement
 
 %%
 top:
@@ -94,6 +97,10 @@ module_declaration:
 		auto node = Node::new_node_declare($io_declarations);
 		nslxx.scope.add_declare($declare_name, node);
 	}
+	| DECLARE declare_name SIMULATION '{' {nslxx.scope.enter();} io_declarations '}' {nslxx.scope.leave();} {
+		auto node = Node::new_node_declare($io_declarations, true);
+		nslxx.scope.add_declare($declare_name, node);
+	}
 	;
 module_definition:
 	MODULE module_name '{' {nslxx.scope.enter();} module_signal_declarations common_tasks '}' {nslxx.scope.leave();} {
@@ -105,7 +112,7 @@ module_definition:
 			}
 			$module_signal_declarations->vars[var.first] = var.second;
 		}
-		auto node = Node::new_node_module($module_signal_declarations, &$common_tasks);
+		auto node = Node::new_node_module($module_signal_declarations, $common_tasks);
 		nslxx.scope.add_module($module_name, node);;
 	}
 	;
@@ -125,6 +132,23 @@ common_tasks:
 common_task:
 	lvalue '=' expression ';' {
 		auto node = Node::new_node_assign($lvalue, $expression);
+		$$ = node;
+	}
+	| simulation_statement {
+		$$ = $1;
+	}
+	;
+simulation_statement:
+	SIM_FINISH '(' NUMBER ')' ';' {
+		auto node = Node::new_node_sim_finish($3);
+		$$ = node;
+	}
+	| SIM_FINISH '(' ')' ';' {
+		auto node = Node::new_node_sim_finish(0);
+		$$ = node;
+	}
+	| SIM_FINISH ';' {
+		auto node = Node::new_node_sim_finish(0);
 		$$ = node;
 	}
 	;

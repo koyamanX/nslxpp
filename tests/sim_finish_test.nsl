@@ -1,0 +1,4 @@
+declare Test {}
+module Test {
+	_finish();
+}
