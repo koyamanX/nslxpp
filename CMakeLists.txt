@@ -26,11 +26,3 @@ enable_testing()
 add_subdirectory(src)
 add_subdirectory(tests)
 
-externalProject_add(firrtl
-	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rd_party/firrtl
-	CONFIGURE_COMMAND ""
-	BUILD_COMMAND sbt compile && sbt assembly
-	BUILD_IN_SOURCE 1
-	INSTALL_COMMAND mkdir -p ${CMAKE_INSTALL_PREFIX}/bin && cp ${CMAKE_SOURCE_DIR}/3rd_party/firrtl/utils/bin/firrtl ${CMAKE_SOURCE_DIR}/3rd_party/firrtl/utils/bin/firrtl.jar ${CMAKE_INSTALL_PREFIX}/bin
-)
-
