@@ -48,7 +48,8 @@ static void gen_simulation(Node *node)
 {
 	std::cout << "    wire halt: UInt<1>" << std::endl;
 	std::cout << "    halt <= UInt(1)" << std::endl;
-	std::cout << "    stop(m_clock, halt, " << node->value << ")" << std::endl;
+	std::cout << "    printf(m_clock, halt, \"" << node->str << "\")" << std::endl;
+	std::cout << "    stop(m_clock, halt, 0)" << std::endl;
 
 }
 

@@ -82,6 +82,11 @@ simulation {
 [#'] {
 	return *yytext;
 }
+\"[^"]*\" {
+	yytext[strlen(yytext)-1] = 0;
+	yylval->build<std::string>(yytext+1);
+	return NSLXX_Parser::token::STRING;
+}
 . {
 	//yyerror("Unknown");
 }

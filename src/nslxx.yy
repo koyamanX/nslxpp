@@ -48,6 +48,7 @@ namespace NSLXX {
 %token STATE_NAME
 %token SIM_FINISH
 %token SIMULATION
+%token<std::string> STRING
 
 %type <std::string> module_name
 %type <ScopeNode *> io_declarations
@@ -139,16 +140,16 @@ common_task:
 	}
 	;
 simulation_statement:
-	SIM_FINISH '(' NUMBER ')' ';' {
+	SIM_FINISH '(' STRING ')' ';' {
 		auto node = Node::new_node_sim_finish($3);
 		$$ = node;
 	}
 	| SIM_FINISH '(' ')' ';' {
-		auto node = Node::new_node_sim_finish(0);
+		auto node = Node::new_node_sim_finish("");
 		$$ = node;
 	}
 	| SIM_FINISH ';' {
-		auto node = Node::new_node_sim_finish(0);
+		auto node = Node::new_node_sim_finish("");
 		$$ = node;
 	}
 	;

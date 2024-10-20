@@ -1,4 +1,4 @@
 declare Test simulation {}
 module Test {
-	_finish();
+	_finish("hello\n");
 }

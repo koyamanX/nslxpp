@@ -139,12 +139,11 @@ Node* Node::new_node_element(std::string name)
     return node;
 }
 
-Node* Node::new_node_sim_finish(int exit_code)
+Node* Node::new_node_sim_finish(std::string str)
 {
-    Node* node = new Node {};
-    node->kind = ND_SIM_FINISH;
-    node->value = exit_code;
-    return node;
+	Node* node = new Node {};
+	node->kind = ND_SIM_FINISH;
+	node->str = str;
+	return node;
 }
-
 

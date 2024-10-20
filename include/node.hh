@@ -61,6 +61,7 @@ struct Node {
     size_t depth;
     std::string name;
     int value;
+	std::string str;
 	bool is_simulation;
 
     static Node* new_node_declare(ScopeNode* scope, bool is_simulation=false);
@@ -82,7 +83,7 @@ struct Node {
     static Node* new_node_expression(NodeType type, Node* left, Node* right);
     static Node* new_node_expression(NodeType type, Node* left);
     static Node* new_node_element(std::string name);
-    static Node* new_node_sim_finish(int exit_code);
+    static Node* new_node_sim_finish(std::string str);
 };
 
 #endif // NODE_HH
